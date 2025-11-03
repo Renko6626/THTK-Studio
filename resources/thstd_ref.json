@@ -1,0 +1,90 @@
+{
+    "0": [
+        "stop()",
+        "停止执行脚本。这类似于在脚本中放置一个无限大的时间标签。时间插值的值会继续更新，并且可以随时触发中断。"
+    ],
+    "1": [
+        "jmp(int time, int offset)",
+        "跳转到脚本开头偏移量为 offset 的指令，并将当前时间设置为 time。"
+    ],
+    "2": [
+        "pos(float x, float y, float z)",
+        "设置摄像机的位置。"
+    ],
+    "3": [
+        "posTime(int duration, int mode, float x, float y, float z)",
+        "在接下来的 duration 帧内，使用给定的插值模式平滑地改变摄像机位置。"
+    ],
+    "4": [
+        "facing(float x, float y, float z)",
+        "设置摄像机朝向的方向。该向量无需被标准化。"
+    ],
+    "5": [
+        "facingTime(int duration, int mode, float x, float y, float z)",
+        "在接下来的 duration 帧内，使用给定的插值模式平滑地改变摄像机朝向。"
+    ],
+    "6": [
+        "up(float x, float y, float z)",
+        "设置摄像机的“上”方向。该向量无需被标准化。"
+    ],
+    "7": [
+        "fov(float field_of_view)",
+        "设置摄像机的垂直视野范围 (Field-of-View)。"
+    ],
+    "8": [
+        "fog(int color, float near_plane, float far_plane)",
+        "设置距离雾的颜色、近平面和远平面。颜色格式为 0xAARRGGBB，thstd 也支持 #RRGGBBAA 写法。"
+    ],
+    "9": [
+        "fogTime(int duration, int mode, int color, float near_plane, float far_plane)",
+        "在接下来的 duration 帧内，使用给定的插值模式平滑地改变雾的各项参数。"
+    ],
+    "10": [
+        "posBezier(int duration, int unused, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3)",
+        "在 duration 帧内，使用贝塞尔曲线将摄像机移动到 (x2, y2, z2)。初始位置为当前位置，(x1/t, y1/t, z1/t) 是初始速度，(x3/t, y3/t, z3/t) 是结束速度。第二个参数完全未使用。"
+    ],
+    "11": [
+        "facingBezier(int duration, int unused, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3)",
+        "在 duration 帧内，使用贝塞尔曲线将摄像机朝向改变为 (x2, y2, z2)。初始朝向为当前值，(x1/t, y1/t, z1/t) 是初始导数，(x3/t, y3/t, z3/t) 是结束导数。第二个参数完全未使用。"
+    ],
+    "12": [
+        "rockingMode(int mode)",
+        "设置摇晃模式并重置摇晃计时器为0。不同游戏有不同模式，0为禁用摇晃。"
+    ],
+    "13": [
+        "bgColor(int color)",
+        "设置一个背景颜色，用于 IDirect3DDevice8::Clear 调用。颜色格式为 0xAARRGGBB，thstd 也支持 #RRGGBBAA 写法。"
+    ],
+    "14": [
+        "sprite(int slot, int script_index, int layer)",
+        "加载一个2D精灵，用于天空盒等。StB–WBaWC 中有8个槽位(0-7)。layer 参数与ANM的层类似但独立。层数低的对象会先绘制。"
+    ],
+    "15": [
+        "ins_15()",
+        "似乎是一个空操作（nop），但没有任何游戏使用过它。"
+    ],
+    "16": [
+        "interruptLabel(int interrupt_id)",
+        "定义一个中断的标签。STD中断与ANM中断类似，可以在脚本等待时被ECL指令触发。"
+    ],
+    "17": [
+        "distortion(int value)",
+        "在屏幕边缘触发扭曲效果。参数的含义不完全清楚，例如在SA和UFO中，值1产生的效果位置不同。"
+    ],
+    "18": [
+        "upTime(int duration, int mode, float x, float y, float z)",
+        "在接下来的 duration 帧内，使用给定的插值模式平滑地改变摄像机的“上”方向。"
+    ],
+    "19": [
+        "ins_19(int interrupt_id)",
+        "在关卡背景的所有精灵上调用 ANM 中断 interrupt_id + 7。用于 HSiFS 第六关的门等效果。"
+    ],
+    "20": [
+        "ins_20(float radius_squared)",
+        "改变绘制距离的阈值（默认为 9160000.0，即 3100.0 的平方）。游戏使用径向绘制距离，当精灵与摄像机的距离平方越过此阈值时会突然出现或消失。没有任何游戏使用过它。"
+    ],
+    "21": [
+        "fovTime(int duration, int mode, float field_of_view)",
+        "在接下来的 duration 帧内，使用给定的插值模式平滑地改变摄像机的垂直视野范围。"
+    ]
+}

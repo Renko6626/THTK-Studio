@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>项目整体说明</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; padding: 16px; line-height: 1.6; background:#1e1e1e; color:#ddd; }
+    h1, h2, h3 { color:#fff; }
+    code, pre { background:#2a2a2a; color:#e6db74; padding:2px 4px; border-radius:3px; }
+    a { color:#66d9ef; }
+    .card { background:#242424; border:1px solid #333; border-radius:8px; padding:16px; margin:12px 0; }
+    .kbd { background:#2a2a2a; border:1px solid #444; border-radius:4px; padding:0 6px; }
+  </style>
+</head>
+<body>
+  <h1>项目整体说明</h1>
+  <div class="card">
+    <h2>概览</h2>
+    <p>这是一个面向东方 Project 资源的脚本编辑器，支持 ANM/STD/MSG/ECL 多脚本类型，集成了解包/打包、语法高亮、结构大纲、悬浮说明与帮助面板等功能。</p>
+  </div>
+
+  <div class="card">
+    <h2>快速入门</h2>
+    <ol>
+      <li>通过菜单“文件 → 打开…”载入脚本文本（或在各面板的“解包”功能中选择源文件）。</li>
+      <li>右侧“帮助”面板支持悬浮查看指令说明；顶部下拉框可直接检索指令名。</li>
+      <li>ECL 面板提供“结构大纲”Dock，可过滤/展开/双击跳转函数与标签。</li>
+      <li>完成编辑后使用相应面板的“打包”功能导出。</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>面板与功能</h2>
+    <ul>
+      <li><b>帮助面板</b>：显示光标下指令的签名与说明，支持下拉检索。</li>
+      <li><b>ECL 工具面板</b>：设置 thecl 与 eclmap 路径、解包/打包、结构大纲。</li>
+      <li><b>代码补全</b>：根据已加载的参考 JSON 提供关键字与指令补全。</li>
+      <li><b>语法检查</b>：STD 支持分号检查；其他类型按需扩展。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>路径与参考数据</h2>
+    <p>应用会优先使用“用户路径设置”，否则回退到 <code>resources/</code> 下的内置文件。</p>
+    <ul>
+      <li><code>thecl.exe</code> / <code>thstd.exe</code> / <code>thmsg.exe</code> 等工具</li>
+      <li><code>thecl_ref.json</code>、<code>thstd_ref.json</code> 等指令说明</li>
+      <li><code>eclmap</code> 等映射/类型定义</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>提示</h2>
+    <ul>
+      <li>切换脚本类型时，相关 Dock 会自动加载/清理，避免界面堆积。</li>
+      <li>若帮助文档未出现，请检查对应 JSON 路径设置。</li>
+    </ul>
+  </div>
+
+  <p style="opacity:.7">你可以编辑此文件以定制说明内容：<code>resources/project_overview.html</code></p>
+</body>
+</html>
