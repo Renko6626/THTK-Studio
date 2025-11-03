@@ -33,6 +33,10 @@ Touhou-Toolkit的集成式打包/解包和脚本编辑器
 
 ## 🚀 快速开始
 
+### 傻瓜体验
+
+如果你连Python环境都懒得配置, 可以去[release](https://github.com/Renko6626/THTK-Studio/releases/tag/THTK-Studio)页面下载exe版本的压缩包
+
 ### 环境要求
 - Windows 10/11
 - Python 3.13
