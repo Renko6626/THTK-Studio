@@ -1,0 +1,10 @@
+{
+  "keywords": [
+    "entry", "script", "sprites"
+  ],
+  "properties": [
+    "version", "name", "format", "width", "height", "memoryPriority", 
+    "lowResScale", "hasData", "THTXFormat", "THTXWidth", "THTXHeight", 
+    "THTXZero", "w_max", "h_max", "x", "y", "w", "h"
+  ]
+}

@@ -13,7 +13,7 @@ from .core.script_handler import ScriptHandler
 from .handlers.anm_handler import AnmScriptHandler
 from .handlers.msg_handler import MsgScriptHandler
 from .handlers.std_handler import StdScriptHandler
-from .handlers.ecl_handler import EclScriptHandler  # 启用 ECL 处理器
+from .handlers.ecl_handler import EclScriptHandler
 
 # --- 导入UI控件 ---
 from .widgets.text_editor import TextEditor
@@ -57,17 +57,15 @@ class MainWindow(QMainWindow):
         }
         self.current_handler: ScriptHandler | None = None
 
-        # --- 3. UI 构建 (调整后的顺序) ---
+        # --- 3. UI 构建---
         self.setWindowTitle("东方Project脚本编辑器")
         self.setGeometry(100, 100, 1400, 800)
         
         self._setup_central_widget()
         self._create_actions()
-        # --- [FIX] ---
-        # 必须先创建 Dock Widgets，因为菜单栏的构建依赖它们
         self._create_dock_widgets() 
         self._create_menu_bar()      
-        # --- END FIX ---
+
         self._create_tool_bar()
         self._create_status_bar()
         
@@ -150,7 +148,7 @@ class MainWindow(QMainWindow):
         
         #print("[DEBUG | Main] Full update finished.")
     def _create_dock_widgets(self):
-        """[NEW] 创建所有通用的可停靠面板。"""
+        """创建所有通用的可停靠面板。"""
         self.help_panel = HelpPanel(parent=self)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.help_panel)
         # 关于弹窗（懒加载）：不嵌入 Dock，仅在菜单触发时显示
@@ -283,13 +281,13 @@ class MainWindow(QMainWindow):
 
         file_path = Path(file_path_str)
         
-        # --- [MODIFIED] 改进的处理器选择逻辑 ---
+
         # 优先匹配更具体的文件名，如 'st01.anm.txt'
         new_handler = self.handler_file_map.get(file_path.name.lower(), None)
         if not new_handler:
             # 如果没有匹配到完整文件名，则回退到匹配后缀
             new_handler = self.handler_file_map.get(file_path.suffix.lower(), None)
-        # --- END MODIFICATION ---
+
 
         if not new_handler:
             QMessageBox.warning(self, "不支持的文件类型", f"没有为 '{file_path.suffix}' 类型的文件配置处理器。")
@@ -301,7 +299,6 @@ class MainWindow(QMainWindow):
         self._load_file_content(file_path)
 
     def switch_handler(self, handler: ScriptHandler | None):
-        # --- [FINAL FIX] 增加保护，如果处理器没变，就什么都不做 ---
         if self.current_handler is handler:
             return
 
@@ -319,7 +316,7 @@ class MainWindow(QMainWindow):
         self._update_window_title()
     def _load_file_content(self, file_path: Path):
         """
-        [REVISED] 使用 TextEditor 的新方法来安全地加载内容。
+        使用 TextEditor 的新方法来安全地加载内容。
         """
         self.current_file_path = file_path
         try:

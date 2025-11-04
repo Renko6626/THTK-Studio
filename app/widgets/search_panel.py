@@ -2,7 +2,7 @@
 
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QPushButton, QLabel, QStyle
 from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtGui import QIcon # <--- FIXED: Added the missing QIcon import
+from PyQt6.QtGui import QIcon
 
 class SearchPanel(QWidget):
     """一个显示在编辑器右上角的、更美观的搜索面板。"""

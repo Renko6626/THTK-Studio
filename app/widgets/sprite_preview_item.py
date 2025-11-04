@@ -13,7 +13,6 @@ class SpritePreviewItem(QWidget):
     """
     clicked = pyqtSignal(str)
     
-    # <--- MODIFICATION 1: 将尺寸进一步缩小，使其更紧凑 ---
     THUMBNAIL_SIZE = QSize(90, 90)
 
     def __init__(self, name: str, pixmap: QPixmap, parent=None):
@@ -23,8 +22,7 @@ class SpritePreviewItem(QWidget):
         self.setFixedSize(self.THUMBNAIL_SIZE)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         
-        # <--- MODIFICATION 2: 修复样式表选择器，确保高亮生效 ---
-        # 将 "SpritePreviewItem" 改为 "QWidget" 来直接指向这个实例
+
         self.setStyleSheet("""
             QWidget {
                 background-color: #2c2c2e;

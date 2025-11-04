@@ -1,0 +1,1282 @@
+{
+    "0": [
+        "nop()",
+        "空指令，不执行任何操作。"
+    ],
+    "1": [
+        "delete()",
+        "返回到当前调用栈的顶部。"
+    ],
+    "10": [
+        "ret()",
+        "从当前子程序返回。"
+    ],
+    "11": [
+        "call(string sub, ...)",
+        "调用给定的子程序。可以接受额外参数作为子程序的参数传递。直接使用已废弃，请改用 @subName() 语法。"
+    ],
+    "12": [
+        "jmp(label target)",
+        "无条件跳转到标签 target。直接使用已废弃，请改用 goto label 语法。"
+    ],
+    "13": [
+        "jmpEq(label target)",
+        "从栈中弹出一个数字，如果它为 false（在此上下文中为 0），则跳转到标签 target。直接使用已废弃，请改用 if/unless 语句。"
+    ],
+    "14": [
+        "jmpNeq(label target)",
+        "从栈中弹出一个数字，如果它为 true（在此上下文中非 0），则跳转到标签 target。直接使用已废弃，请改用 if/unless 语句。"
+    ],
+    "15": [
+        "callAsync(string sub, ...)",
+        "异步调用给定的子程序。可以接受额外参数作为子程序的参数传递。直接使用已废弃，请改用 @subName() async 语法。"
+    ],
+    "16": [
+        "callAsyncId(string sub, int id, ...)",
+        "异步调用给定的子程序，并为其分配 ID。可以接受额外参数。直接使用已废弃，请改用 @subName() async id 语法。"
+    ],
+    "17": [
+        "killAsync(int id)",
+        "结束最近一个 ID 为 id 的异步子程序。如果找不到该 ID 的子程序，则不执行任何操作。使用 ID -1 可能导致意外结果，从删除敌人到冻结游戏不等。"
+    ],
+    "18": [
+        "ins_18(int id)",
+        "设 vm 为最近一个 ID 为 id 的异步子程序，此指令将 vm[0x000011E4] 设置为 1。"
+    ],
+    "19": [
+        "ins_19(int id)",
+        "设 vm 为最近一个 ID 为 id 的异步子程序，此指令将 vm[0x000011E4] 设置为 0。"
+    ],
+    "20": [
+        "ins_20(int id, int b)",
+        "设 vm 为最近一个 ID 为 id 的异步子程序，此指令将 vm[0x0000101C] 设置为 b。"
+    ],
+    "21": [
+        "killAllAsync()",
+        "结束所有正在运行的异步子程序。在异步子程序中调用此指令可能导致游戏崩溃等意外结果。"
+    ],
+    "22": [
+        "debug22(int a, string b)",
+        "调试指令，在游戏的发行版本中不存在。很可能用于在某个调试菜单变量等于 a 时调用子程序 b。"
+    ],
+    "23": [
+        "wait(int time)",
+        "暂停子程序执行 time 帧。"
+    ],
+    "24": [
+        "waitf(float time)",
+        "等待，但时间以浮点数形式给出。子帧确实存在并影响游戏速度。"
+    ],
+    "30": [
+        "unknown30(string formatString, ...)",
+        "某种 printf 调试指令，可以在 formatString 后接受额外的浮点/整数参数。在游戏的发行版本中不存在。"
+    ],
+    "40": [
+        "stackAlloc(int size)",
+        "将 ECL 栈指针增加 size 字节，为子程序变量腾出空间。已废弃，thecl 会自动生成此指令。"
+    ],
+    "42": [
+        "pushi(int num)",
+        "将一个整数压入 ECL 栈。已废弃，请通过编写未赋值的表达式来压入值。"
+    ],
+    "43": [
+        "seti(int var)",
+        "从栈中弹出一个整数到变量 var 中。已废弃，请改用赋值语法。"
+    ],
+    "44": [
+        "pushf(float num)",
+        "将一个浮点数压入 ECL 栈。已废弃，请通过编写未赋值的表达式来压入值。"
+    ],
+    "45": [
+        "setf(float var)",
+        "从栈中弹出一个浮点数到变量 var 中。已废弃，请改用赋值语法。"
+    ],
+    "50": [
+        "addi()",
+        "对栈中的整数求和。已废弃，请改用表达式。"
+    ],
+    "51": [
+        "addf()",
+        "对栈中的浮点数求和。已废弃，请改用表达式。"
+    ],
+    "52": [
+        "subi()",
+        "对栈中的整数做减法。已废弃，请改用表达式。"
+    ],
+    "53": [
+        "subf()",
+        "对栈中的浮点数做减法。已废弃，请改用表达式。"
+    ],
+    "54": [
+        "muli()",
+        "对栈中的整数做乘法。已废弃，请改用表达式。"
+    ],
+    "55": [
+        "mulf()",
+        "对栈中的浮点数做乘法。已废弃，请改用表达式。"
+    ],
+    "56": [
+        "divi()",
+        "对栈中的整数做除法。已废弃，请改用表达式。"
+    ],
+    "57": [
+        "divf()",
+        "对栈中的浮点数做除法。已废弃，请改用表达式。"
+    ],
+    "58": [
+        "modi()",
+        "对栈中的整数做模运算。已废弃，请改用表达式。"
+    ],
+    "59": [
+        "eqi()",
+        "栈中整数的 == 比较。已废弃，请改用表达式。"
+    ],
+    "60": [
+        "eqf()",
+        "栈中浮点数的 == 比较。已废弃，请改用表达式。"
+    ],
+    "61": [
+        "neqi()",
+        "栈中整数的 != 比较。已废弃，请改用表达式。"
+    ],
+    "62": [
+        "neqf()",
+        "栈中浮点数的 != 比较。已废弃，请改用表达式。"
+    ],
+    "63": [
+        "lessi()",
+        "栈中整数的 < 比较。已废弃，请改用表达式。"
+    ],
+    "64": [
+        "lessf()",
+        "栈中浮点数的 < 比较。已废弃，请改用表达式。"
+    ],
+    "65": [
+        "leqi()",
+        "栈中整数的 <= 比较。已废弃，请改用表达式。"
+    ],
+    "66": [
+        "leqf()",
+        "栈中浮点数的 <= 比较。已废弃，请改用表达式。"
+    ],
+    "67": [
+        "greateri()",
+        "栈中整数的 > 比较。已废弃，请改用表达式。"
+    ],
+    "68": [
+        "greaterf()",
+        "栈中浮点数的 > 比较。已废弃，请改用表达式。"
+    ],
+    "69": [
+        "geqi()",
+        "栈中整数的 >= 比较。已废弃，请改用表达式。"
+    ],
+    "70": [
+        "geqf()",
+        "栈中浮点数的 >= 比较。已废弃，请改用表达式。"
+    ],
+    "71": [
+        "noti()",
+        "栈中整数的 NOT 运算 (例如 !1)。已废弃，请改用表达式。"
+    ],
+    "72": [
+        "notf()",
+        "栈中浮点数的 NOT 运算 (例如 !1.0f)。已废弃，请改用表达式。"
+    ],
+    "73": [
+        "or()",
+        "栈中的逻辑或运算。已废弃，请改用表达式。"
+    ],
+    "74": [
+        "and()",
+        "栈中的逻辑与运算。已废弃，请改用表达式。"
+    ],
+    "75": [
+        "xor()",
+        "栈中整数的按位异或运算。已废弃，请改用表达式。"
+    ],
+    "76": [
+        "bit_or()",
+        "栈中整数的按位或运算。已废弃，请改用表达式。"
+    ],
+    "77": [
+        "bit_and()",
+        "栈中整数的按位与运算。已废弃，请改用表达式。"
+    ],
+    "78": [
+        "deci(int var)",
+        "将变量 var 压入栈然后自减。已废弃，请改用表达式。"
+    ],
+    "79": [
+        "stackSin()",
+        "对栈中的浮点数进行 sin 运算。已废弃，请改用 sin(floatVal)。"
+    ],
+    "80": [
+        "stackCos()",
+        "对栈中的浮点数进行 cos 运算。已废弃，请改用 cos(floatVal)。"
+    ],
+    "81": [
+        "circlePos(float varX, float varY, float ang, float radius)",
+        "执行操作: varX = cos(ang)*radius; varY = sin(ang)*radius;"
+    ],
+    "82": [
+        "validRad(float var)",
+        "将 var 中的角度归一化（normalize）。"
+    ],
+    "83": [
+        "negi()",
+        "对栈中的整数取反。已废弃，请改用表达式。"
+    ],
+    "84": [
+        "negf()",
+        "对栈中的浮点数取反。已废弃，请改用表达式。"
+    ],
+    "85": [
+        "squareSum(float var, float x, float y)",
+        "执行操作: var = x*x + y*y;"
+    ],
+    "86": [
+        "squareSumRoot(float var, float x, float y)",
+        "执行操作: var = sqrt(x*x + y*y);"
+    ],
+    "87": [
+        "getAngle(float var, float x1, float y1, float x2, float y2)",
+        "计算从 (x1,y1) 到 (x2,y2) 的角度并存入 var。"
+    ],
+    "88": [
+        "stackSqrt()",
+        "对栈中的浮点数进行平方根运算。已废弃，请改用 sqrt(floatVal)。"
+    ],
+    "89": [
+        "linearFunc(float var, float a, float x)",
+        "执行操作: var = a*x;"
+    ],
+    "90": [
+        "pointRotate(float varX, float varY, float x, float y, float rad)",
+        "将点 (x,y) 旋转 rad 角度，并将结果坐标存入 varX 和 varY。"
+    ],
+    "91": [
+        "floatTime(int slot, float var, int time, int mode, float init, float final)",
+        "在 time 帧内使用 mode 模式，使变量 var 从 init 变为 final。slot 用于设置此指令使用的槽位，每个敌人有8个槽位(0到7)。"
+    ],
+    "92": [
+        "math92(int slot, float var, int time, int mode, float init, float final, float m, float n)",
+        "与 floatTime 相同，但多接受两个未知含义的参数。需要研究。"
+    ],
+    "93": [
+        "math93(float varX, float varY, float r1, float r2)",
+        "根据 r1 和 r2 获取一个随机点并存入 (varX, varY)。需要研究。"
+    ],
+    "300": [
+        "enmCreate(string sub, float x, float y, int hp, int score, int item)",
+        "在调用者的相对坐标 (x, y) 处，使用子程序 sub 创建一个敌人。其生命值为 hp，分数为 score，掉落道具为 item。"
+    ],
+    "301": [
+        "enmCreateA(string sub, float x, float y, int hp, int score, int item)",
+        "在绝对坐标 (x, y) 处，使用子程序 sub 创建一个敌人。其生命值为 hp，分数为 score，掉落道具为 item。"
+    ],
+    "302": [
+        "anmSelect(int anmIndex)",
+        "根据 anmIndex 选择供其他指令使用的 ANM 文件。"
+    ],
+    "303": [
+        "anmSetSprite(int slot, int script)",
+        "从通过 anmSelect 选择的 ANM 文件中，将脚本 script 加载到槽位 slot。"
+    ],
+    "304": [
+        "enmCreateM(string sub, float x, float y, int hp, int score, int item)",
+        "在调用者的相对坐标 (x, y) 处，使用子程序 sub 创建一个镜像敌人。"
+    ],
+    "305": [
+        "enmCreateAM(string sub, float x, float y, int hp, int score, int item)",
+        "在绝对坐标 (x, y) 处，使用子程序 sub 创建一个镜像敌人。"
+    ],
+    "306": [
+        "anmSetMain(int slot, int script)",
+        "将脚本 script 加载到槽位 slot。但提供的脚本编号仅在敌人静止时使用。向左移动时使用 script+1，向右 script+2，左下 script+3，右下 script+4。"
+    ],
+    "307": [
+        "anmPlay(int anmIndex, int script)",
+        "从 anmIndex 指定的 ANM 文件中，在调用者的当前坐标播放脚本 script。生成的脚本是完全独立的。"
+    ],
+    "308": [
+        "anmPlayAbs(int anmIndex, int script)",
+        "从 anmIndex 指定的 ANM 文件中，在坐标 (0, 0) 处播放脚本 script。生成的脚本是完全独立的。"
+    ],
+    "309": [
+        "enmCreateF(string sub, float x, float y, int hp, int score, int item)",
+        "在调用者的相对坐标 (x, y) 处创建一个填充(filler)敌人。"
+    ],
+    "310": [
+        "enmCreateAF(string sub, float x, float y, int hp, int score, int item)",
+        "在绝对坐标 (x, y) 处创建一个填充(filler)敌人。"
+    ],
+    "311": [
+        "enmCreateMF(string sub, float x, float y, int hp, int score, int item)",
+        "在调用者的相对坐标 (x, y) 处创建一个镜像填充(filler)敌人。"
+    ],
+    "312": [
+        "enmCreateAMF(string sub, float x, float y, int hp, int score, int item)",
+        "在绝对坐标 (x, y) 处创建一个镜像填充(filler)敌人。"
+    ],
+    "313": [
+        "anmSelectedPlay(int script)",
+        "与 anmPlay 相同，但使用由 anmSelect 选择的 ANM 文件。"
+    ],
+    "314": [
+        "anmPlayHigh(int anmIndex, int script)",
+        "与 anmPlay 相同，但生成的 ANM 具有更高的层级。需要进一步研究。"
+    ],
+    "315": [
+        "anmPlayRotate(int anmIndex, int script, float angle)",
+        "与 anmPlay 相同，但将生成的 ANM 的旋转角度设置为 angle。"
+    ],
+    "316": [
+        "anm316(int a, int b)",
+        "未知指令。"
+    ],
+    "317": [
+        "anmSwitch(int slot, int switch)",
+        "将槽位 slot 上的 ANM 脚本的执行指针设置到 ANM ins_5(a) 处（其中 a == switch）。"
+    ],
+    "318": [
+        "anmReset()",
+        "重置调用者的一些与 ANM 相关的参数。"
+    ],
+    "319": [
+        "anmRotate(int slot, float r)",
+        "将槽位 slot 上的 ANM 脚本的旋转角度设置为 r。"
+    ],
+    "320": [
+        "anmMove(int slot, float x, float y)",
+        "将槽位 slot 上的 ANM 脚本的位置设置为 (x,y)。这是一个相对位置，会与调用者的位置叠加。"
+    ],
+    "321": [
+        "enmMapleEnemy(string sub, float x, float y, int hp, int score, int item)",
+        "enmCreate 的变种，由 'MapleEnemy' 使用。具体差异未知。"
+    ],
+    "322": [
+        "enm322(int a, int b)",
+        "未知指令。"
+    ],
+    "323": [
+        "deathAnm(int anmIndex, int script)",
+        "设置敌人死亡时播放的动画为 anmIndex 指定的 ANM 文件中的脚本 script。"
+    ],
+    "324": [
+        "enmPos2()",
+        "未知指令。"
+    ],
+    "325": [
+        "anmColor(int slot, int R, int G, int B)",
+        "修改槽位 slot 上的 ANM 脚本的颜色。R, G, B 的值必须在 0 到 255 之间。"
+    ],
+    "326": [
+        "anmColorTime(int slot, int time, int mode, int R, int G, int B)",
+        "与 anmColor 相同，但颜色变化在 time 帧内以 mode 模式应用。"
+    ],
+    "327": [
+        "anmAlpha(int slot, int alpha)",
+        "设置槽位 slot 上的 ANM 脚本的 alpha 值（不透明度），范围为 0-255。"
+    ],
+    "328": [
+        "anmAlphaTime(int slot, int time, int mode, int alpha)",
+        "与 anmAlpha 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "329": [
+        "anmScale(int slot, float w, float h)",
+        "设置槽位 slot 上的 ANM 脚本的水平和垂直缩放。会覆盖 ANM 脚本自身的缩放属性。"
+    ],
+    "330": [
+        "anmScaleTime(int slot, int time, int mode, float w, float h)",
+        "与 anmScale 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "331": [
+        "anmAlpha2(int slot, int alpha)",
+        "设置槽位 slot 上的 ANM 脚本的 alpha2（渐变不透明度）为 alpha。"
+    ],
+    "332": [
+        "anmAlpha2Time(int slot, int time, int mode, int alpha)",
+        "与 anmAlpha2 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "333": [
+        "anm333(int a, int b, int c, float r, float s)",
+        "未知指令。可能对槽位 a 上的 ANM 脚本执行某些操作。"
+    ],
+    "334": [
+        "anm334(int a)",
+        "未知指令。可能与神灵庙中的闪电效果有关。"
+    ],
+    "335": [
+        "anmScale2(int slot, float w, float h)",
+        "与 anmScale 类似，但不覆盖 ANM 脚本的缩放，而是与之相乘。"
+    ],
+    "336": [
+        "anmLayer(int slot, int layer)",
+        "设置槽位 slot 上的 ANM 脚本的图层为 layer。"
+    ],
+    "337": [
+        "anmBlendMode(int slot, int b)",
+        "设置槽位 slot 上的 ANM 脚本的混合模式为 b。"
+    ],
+    "338": [
+        "anmPlayPos(int anmIndex, int script, float x, float y, float z)",
+        "与 anmPlay 相同，但生成的脚本有 (x,y) 的位置偏移。对于 3D 对象，z 也有效。"
+    ],
+    "339": [
+        "anm339(int a, int b, int c)",
+        "未知指令。可能对槽位 a 上的 ANM 脚本执行某些操作。"
+    ],
+    "340": [
+        "enmDelete(int id)",
+        "删除指定 ID 的敌人。"
+    ],
+    "400": [
+        "movePos(float x, float y)",
+        "设置调用者的绝对位置为 (x, y)。"
+    ],
+    "401": [
+        "movePosTime(int time, int mode, float x, float y)",
+        "与 movePos 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "402": [
+        "movePosRel(float x, float y)",
+        "设置调用者的相对位置为 (x, y)。"
+    ],
+    "403": [
+        "movePosRelTime(int time, int mode, float x, float y)",
+        "与 movePosRel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "404": [
+        "moveVel(float r, float spd)",
+        "设置调用者的绝对移动角度为 r，速度为 spd。"
+    ],
+    "405": [
+        "moveVelTime(int time, int mode, float r, float spd)",
+        "与 moveVel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "406": [
+        "moveVelRel(float r, float spd)",
+        "设置调用者的相对移动角度为 r，速度为 spd。"
+    ],
+    "407": [
+        "moveVelRelTime(int time, int mode, float r, float spd)",
+        "与 moveVelRel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "408": [
+        "moveCircle(float θ, float spd, float rad, float radInc)",
+        "设置绝对圆周运动：θ 是初始角度，spd 是角速度，rad 是半径，radInc 是每帧半径增量。"
+    ],
+    "409": [
+        "moveCircleTime(int time, int mode, float spd, float rad, float radInc)",
+        "与 moveCircle 相同，但变化在 time 帧内以 mode 模式应用。没有初始角度参数。"
+    ],
+    "410": [
+        "moveCircleRel(float θ, float spd, float rad, float radInc)",
+        "设置相对圆周运动：θ 是初始角度，spd 是角速度，rad 是半径，radInc 是每帧半径增量。"
+    ],
+    "411": [
+        "moveCircleRelTime(int time, int mode, float spd, float rad, float radInc)",
+        "与 moveCircleRel 相同，但变化在 time 帧内以 mode 模式应用。没有初始角度参数。"
+    ],
+    "412": [
+        "moveRand(int time, int mode, float spd)",
+        "随机化调用者的绝对角度，并设置绝对速度为 spd。速度在 time 帧内以 mode 模式变回 0。"
+    ],
+    "413": [
+        "moveRandRel(int time, int mode, float spd)",
+        "随机化调用者的相对角度，并设置相对速度为 spd。速度在 time 帧内以 mode 模式变回 0。"
+    ],
+    "414": [
+        "moveBoss()",
+        "设置调用者的绝对位置为 Boss 的绝对位置。如果没有 Boss，会导致游戏崩溃。"
+    ],
+    "415": [
+        "moveBossRel()",
+        "设置调用者的相对位置为 Boss 的相对位置。如果没有 Boss，会导致游戏崩溃。"
+    ],
+    "416": [
+        "movePos3d(float x, float y, float z)",
+        "与 movePos 相同，但接受 z 坐标，可能影响 3D ANM 脚本。"
+    ],
+    "417": [
+        "movePos3dRel(float x, float y, float z)",
+        "与 movePosRel 相同，但接受 z 坐标。"
+    ],
+    "418": [
+        "moveAdd(float x, float y)",
+        "将调用者的绝对位置增加 (x, y)。"
+    ],
+    "419": [
+        "move419(float x, float y)",
+        "此指令本应是 moveAdd 的相对版本，但行为似乎不符合预期。"
+    ],
+    "420": [
+        "moveEllipse(float θ, float spd, float rad, float radInc, float ellDir, float ellRatio)",
+        "设置绝对椭圆运动。θ 是初始角度，spd 是角速度，rad 是基础半径，radInc 是半径增量，ellRatio 是挤压比，ellDir 是挤压方向。"
+    ],
+    "421": [
+        "moveEllipseTime(int time, int mode, float spd, float rad, float radInc, float ellDir, float ellRatio)",
+        "与 moveEllipse 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "422": [
+        "moveEllipseRel(float θ, float spd, float rad, float radInc, float ellDir, float ellRatio)",
+        "设置相对椭圆运动。"
+    ],
+    "423": [
+        "moveEllipseRelTime(int time, int mode, float spd, float rad, float radInc, float ellDir, float ellRatio)",
+        "与 moveEllipseRel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "424": [
+        "moveSetMirror(int state)",
+        "设置调用者的镜像标志为 state。"
+    ],
+    "425": [
+        "moveBezier(int time, float x1, float y1, float x2, float y2, float x3, float y3)",
+        "在 time 帧内，敌人沿贝塞尔曲线从当前位置移动到 (x2, y2)，控制点由 (x1, y1) 和 (x3, y3) 决定。使用绝对位置。"
+    ],
+    "426": [
+        "moveBezierRel(int time, float x1, float y1, float x2, float y2, float x3, float y3)",
+        "与 moveBezier 相同，但使用相对位置。"
+    ],
+    "427": [
+        "moveReset()",
+        "重置一些与移动相关的参数。"
+    ],
+    "428": [
+        "moveVelNM(float r, float spd)",
+        "与 moveVel 相同，但忽略镜像标志。"
+    ],
+    "429": [
+        "moveVelNMTime(int time, int mode, float r, float spd)",
+        "与 moveVelTime 相同，但忽略镜像标志。"
+    ],
+    "430": [
+        "moveVelNMRel(float r, float spd)",
+        "与 moveVelRel 相同，但忽略镜像标志。"
+    ],
+    "431": [
+        "moveVelNMRelTime(int time, int mode, float r, float spd)",
+        "与 moveVelRelTime 相同，但忽略镜像标志。"
+    ],
+    "432": [
+        "moveEnm(int id)",
+        "设置调用者的绝对位置为 ID 为 id 的敌人的绝对位置。"
+    ],
+    "433": [
+        "moveEnmRel(int id)",
+        "设置调用者的相对位置为 ID 为 id 的敌人的相对位置。"
+    ],
+    "434": [
+        "moveCurve(int time, int mode, int c, float x, float y)",
+        "在 time 帧内以 mode 模式，将调用者的绝对位置变为 (x,y)。运动轨迹是基于 c 的曲线。"
+    ],
+    "435": [
+        "moveCurveRel(int time, int mode, int c, float x, float y)",
+        "与 moveCurve 相同，但使用相对位置。"
+    ],
+    "436": [
+        "moveAddTime(int time, int mode, float x, float y)",
+        "与 moveAdd 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "437": [
+        "moveAddRelTime(int time, int mode, float x, float y)",
+        "move419 的时限版本，行为符合预期。"
+    ],
+    "438": [
+        "moveCurveAdd(int time, int mode, int c, float x, float y)",
+        "与 moveCurve 相同，但 (x,y) 会与调用者当前的绝对坐标相加。"
+    ],
+    "439": [
+        "moveCurveAddRel(int time, int mode, int c, float x, float y)",
+        "与 moveCurveRel 相同，但 (x,y) 会与调用者当前的相对坐标相加。"
+    ],
+    "440": [
+        "moveAngle(float r)",
+        "设置调用者的绝对移动角度为 r。"
+    ],
+    "441": [
+        "moveAngleTime(int time, int mode, float r)",
+        "与 moveAngle 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "442": [
+        "moveAngleRel(float r)",
+        "设置调用者的相对移动角度为 r。"
+    ],
+    "443": [
+        "moveAngleRelTime(int time, int mode, float r)",
+        "与 moveAngleRel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "444": [
+        "moveSpeed(float spd)",
+        "设置调用者的绝对移动速度为 spd。"
+    ],
+    "445": [
+        "moveSpeedTime(int time, int mode, float spd)",
+        "与 moveSpeed 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "446": [
+        "moveSpeedRel(float spd)",
+        "设置调用者的相对移动速度为 spd。"
+    ],
+    "447": [
+        "moveSpeedRelTime(int time, int mode, float spd)",
+        "与 moveSpeedRel 相同，但变化在 time 帧内以 mode 模式应用。"
+    ],
+    "500": [
+        "setHurtbox(float w, float h)",
+        "设置调用者的受伤判定框（hurtbox）宽度为 w，高度为 h。"
+    ],
+    "501": [
+        "setHitbox(float w, float h)",
+        "设置调用者的碰撞判定框（hitbox）宽度为 w，高度为 h。"
+    ],
+    "502": [
+        "flagSet(int n)",
+        "根据 n 的值设置一个或多个标志位。"
+    ],
+    "503": [
+        "flagClear(int n)",
+        "根据 n 的值清除一个或多个标志位。"
+    ],
+    "504": [
+        "moveLimit(float x, float y, float w, float h)",
+        "设置调用者的移动限制矩形区域：(x,y) 是中心坐标，w 和 h 是宽高。"
+    ],
+    "505": [
+        "moveLimitReset()",
+        "移除调用者的移动限制。"
+    ],
+    "506": [
+        "dropClear()",
+        "清除调用者的额外道具掉落。"
+    ],
+    "507": [
+        "dropExtra(int type, int amount)",
+        "为调用者的额外掉落添加 amount 个 type 类型的道具。"
+    ],
+    "508": [
+        "dropArea(float w, float h)",
+        "设置调用者道具掉落区域的宽度为 w，高度为 h。"
+    ],
+    "509": [
+        "dropItems()",
+        "掉落调用者拥有的所有道具。在符卡练习中无效。"
+    ],
+    "510": [
+        "dropMain(int type)",
+        "设置调用者的主要掉落道具类型为 type。"
+    ],
+    "511": [
+        "lifeSet(int hp)",
+        "将调用者的当前生命值和最大生命值都设置为 hp。"
+    ],
+    "512": [
+        "setBoss(int a)",
+        "a=0 激活Boss模式并设为主要Boss；a>0 设为次要Boss；a=-1 结束Boss模式。"
+    ],
+    "513": [
+        "timerReset()",
+        "重置Boss计时器。"
+    ],
+    "514": [
+        "setInterrupt(int slot, int hp, int time, string sub)",
+        "在槽位 slot 设置一个中断：当生命值低于 hp 或经过 time 帧后，执行子程序 sub。"
+    ],
+    "515": [
+        "setInvuln(int time)",
+        "使调用者在 time 帧内完全无敌。"
+    ],
+    "516": [
+        "playSound(int id)",
+        "播放 ID 为 id 的音效。"
+    ],
+    "517": [
+        "setScreenShake(int time, int startIntensity, int endIntensity)",
+        "在 time 帧内激活屏幕震动，强度从 startIntensity 变为 endIntensity。"
+    ],
+    "518": [
+        "dialogRead(int dialogueId)",
+        "开始一段对话，dialogueId 是 .msg 文件中的条目 ID。同时具有 enmKillAll 的效果。"
+    ],
+    "519": [
+        "dialogWait()",
+        "等待直到没有活动的对话框。"
+    ],
+    "520": [
+        "bossWait()",
+        "等待直到没有存活的 Boss 敌人。"
+    ],
+    "521": [
+        "setTimeout(int slot, string sub)",
+        "在槽位 slot 设置一个超时中断：当计时器归零时，执行子程序 sub。"
+    ],
+    "522": [
+        "spellEx(int id, int time, int type, string name)",
+        "与 spell 相同，但难度值不会被加到 id 上。"
+    ],
+    "523": [
+        "spellEnd()",
+        "结束当前活动的符卡。"
+    ],
+    "524": [
+        "setChapter(int a)",
+        "负责显示 Boss 名称等。在绀珠传中，它还会结束当前章节并开始新章节。"
+    ],
+    "525": [
+        "enmKillAll()",
+        "杀死所有其他敌人（除非它们有免疫标志）。"
+    ],
+    "526": [
+        "etProtectRange(float r)",
+        "使调用者生成的子弹在玩家周围半径 r 的范围内不会生成。"
+    ],
+    "527": [
+        "lifeMarker(int slot, float hp, int c)",
+        "在槽位 slot 设置一个新的血条标记。hp 决定标记位置，c 是一个未使用的RGB值。"
+    ],
+    "528": [
+        "spellUnused(int id, int time, int type, string name)",
+        "与 spellEx 相同，未使用。"
+    ],
+    "529": [
+        "rankF3(float var, float a, float b, float c)",
+        "根据 Rank (低/中/高) 将 var 设置为 a, b 或 c。"
+    ],
+    "530": [
+        "rankF5(float var, float a, float b, float c, float d, float e)",
+        "根据 Rank (5档) 将 var 设置为对应的值。"
+    ],
+    "531": [
+        "rankF2(float var, float a, float b)",
+        "根据 Rank (低/高) 将 var 设置为 a 或 b。"
+    ],
+    "532": [
+        "rankI3(int var, int a, int b, int c)",
+        "根据 Rank (低/中/高) 将 var 设置为 a, b 或 c。"
+    ],
+    "533": [
+        "rankI5(int var, int a, int b, int c, int d, int e)",
+        "根据 Rank (5档) 将 var 设置为对应的值。"
+    ],
+    "534": [
+        "rankI2(int var, int a, int b)",
+        "根据 Rank (低/高) 将 var 设置为 a 或 b。"
+    ],
+    "535": [
+        "diffI(int var, int E, int N, int H, int L)",
+        "根据难度将 var 设置为 E, N, H, L 中的一个。"
+    ],
+    "536": [
+        "diffF(float var, float E, float N, float H, float L)",
+        "根据难度将 var 设置为 E, N, H, L 中的一个。"
+    ],
+    "537": [
+        "spell(int id, int time, int mode, string name)",
+        "声明一张符卡。实际ID为 id + 难度值。time 决定符卡宣言的收缩时间和奖励分减少速度。"
+    ],
+    "538": [
+        "spell2(int id, int time, int mode, string name)",
+        "与 spell 相同，但实际ID为 id - 1 + 难度值。"
+    ],
+    "539": [
+        "spell3(int id, int time, int mode, string name)",
+        "与 spell 相同，但实际ID为 id - 2 + 难度值。"
+    ],
+    "540": [
+        "stars(int cnt)",
+        "设置左上角显示的星星数量。"
+    ],
+    "541": [
+        "noHitboxDur(int time)",
+        "在 time 帧内禁用碰撞判定框（但保留受伤判定框）。"
+    ],
+    "542": [
+        "spellTimeout()",
+        "使当前符卡成为超时符卡（时非）。"
+    ],
+    "543": [
+        "unknown543()",
+        "未知指令。"
+    ],
+    "544": [
+        "unknown544(int a)",
+        "未知指令，可能设置或清除某个标志。"
+    ],
+    "545": [
+        "laserCancel()",
+        "消除所有激光。"
+    ],
+    "546": [
+        "bombShield(int a, int script)",
+        "设置炸弹护盾标志 (a=1 开启, a=0 关闭)，在炸弹激活时 ANM 脚本会变为 script。"
+    ],
+    "547": [
+        "gameSpeed(float s)",
+        "设置游戏速度为正常速度的 s 倍。"
+    ],
+    "548": [
+        "diffWait(int e, int n, int h, int l)",
+        "与 wait 相同，但等待时间根据难度从给定的四个值中选择。"
+    ],
+    "549": [
+        "unknown549(int a)",
+        "未知指令。"
+    ],
+    "550": [
+        "unknown550(int a)",
+        "未知指令。"
+    ],
+    "551": [
+        "unknown551(int a)",
+        "未知指令。"
+    ],
+    "552": [
+        "zIndex(int layers)",
+        "将调用者使用的所有 ANM 脚本的层级增加 layers。"
+    ],
+    "553": [
+        "hitSound(int id)",
+        "使调用者在被击中时播放音效 id。"
+    ],
+    "554": [
+        "stageLogo()",
+        "显示关卡标题 Logo。"
+    ],
+    "555": [
+        "enmAlive(int var, int id)",
+        "检查 ID 为 id 的敌人是否存活，并将结果 (1 或 0) 存入 var。"
+    ],
+    "556": [
+        "setDeath(string sub)",
+        "使调用者在生命值归零时执行子程序 sub。"
+    ],
+    "557": [
+        "fogTime(int time, int mode, int color, float start, float end)",
+        "与 STD 的 fogTime 指令相同。"
+    ],
+    "558": [
+        "flagMirror(int state)",
+        "与 moveSetMirror 完全相同。"
+    ],
+    "559": [
+        "enmLimit(int limit)",
+        "设置场上最大敌人数量限制。默认为 99999。"
+    ],
+    "560": [
+        "unknown560(float r, float s)",
+        "未知指令。"
+    ],
+    "561": [
+        "die()",
+        "使调用者执行 setDeath 设置的子程序，如果没有则直接死亡。"
+    ],
+    "562": [
+        "dropItemsSp()",
+        "与 dropItems 相同，但在符卡练习中不会被阻止。"
+    ],
+    "563": [
+        "unknown563(int flagState)",
+        "设置标志12，控制碰撞框是矩形(1)还是椭圆(0)。"
+    ],
+    "564": [
+        "hitboxRotate(float angle)",
+        "旋转敌人的碰撞框和受伤框。仅对矩形碰撞框有效。"
+    ],
+    "565": [
+        "bombInvuln(float red)",
+        "设置炸弹激活时受到的伤害减免率。0.0f 为完全免疫，1.0f 为全伤。"
+    ],
+    "566": [
+        "unknown566()",
+        "未知指令。"
+    ],
+    "567": [
+        "unknown567(int a)",
+        "未知指令。"
+    ],
+    "568": [
+        "spellMode(int state)",
+        "启用(1)或禁用(0)符卡伤害减免。"
+    ],
+    "569": [
+        "unknown569(int a)",
+        "未知指令。"
+    ],
+    "570": [
+        "unknown570()",
+        "未知指令。"
+    ],
+    "571": [
+        "unknown571()",
+        "未知指令。"
+    ],
+    "572": [
+        "lifeNow(int hp)",
+        "将调用者当前生命值设为 hp，不改变最大生命值。"
+    ],
+    "600": [
+        "etNew(int etId)",
+        "将子弹管理器 etId 重置为默认属性。"
+    ],
+    "601": [
+        "etOn(int etId)",
+        "使用子弹管理器 etId 的属性发射子弹。"
+    ],
+    "602": [
+        "etSprite(int etId, int type, int color)",
+        "设置子弹管理器 etId 的子弹样式和颜色。"
+    ],
+    "603": [
+        "etOffset(int etId, float x, float y)",
+        "设置由子弹管理器 etId 生成的子弹的相对位置偏移为 (x,y)。"
+    ],
+    "604": [
+        "etAngle(int etId, float angle1, float angle2)",
+        "设置子弹管理器 etId 的 angle1 和 angle2。"
+    ],
+    "605": [
+        "etSpeed(int etId, float speed1, float speed2)",
+        "设置子弹管理器 etId 的 speed1 和 speed2。"
+    ],
+    "606": [
+        "etCount(int etId, int count1, int count2)",
+        "设置子弹管理器 etId 的 count1 和 count2。"
+    ],
+    "607": [
+        "etAim(int etId, int aim)",
+        "设置子弹管理器 etId 的瞄准模式。"
+    ],
+    "608": [
+        "etSound(int etId, int sound1, int sound2)",
+        "设置子弹管理器 etId 的音效。sound1 在发射时播放，sound2 在变换时播放。-1为无声。"
+    ],
+    "609": [
+        "etExSet(int etId, int index, int async, int type, int a, int b, float r, float s)",
+        "设置子弹管理器 etId 的子弹变换。"
+    ],
+    "610": [
+        "etExSet2(int etId, int index, int async, int type, int a, int b, int c, int d, float r, float s, float m, float n)",
+        "与 etExSet 相同，但为某些变换类型接受更多参数。"
+    ],
+    "611": [
+        "etEx(int etId, int async, int type, int a, int b, float r, float s)",
+        "向子弹管理器 etId 添加子弹变换。"
+    ],
+    "612": [
+        "etEx2(int etId, int async, int type, int a, int b, int c, int d, float r, float s, float m, float n)",
+        "与 etEx 相同，但为某些变换类型接受更多参数。"
+    ],
+    "613": [
+        "etClearAll()",
+        "消除所有子弹。"
+    ],
+    "614": [
+        "etCopy(int etIdDest, int etIdSrc)",
+        "将 etIdSrc 的所有属性复制到 etIdDest。注意：此指令部分损坏。"
+    ],
+    "615": [
+        "etCancel(float r)",
+        "消除调用者周围半径 r 内的所有子弹，并将其变为消弹道具。"
+    ],
+    "616": [
+        "etClear(float r)",
+        "消除调用者周围半径 r 内的所有子弹，不产生道具。"
+    ],
+    "617": [
+        "etSpeedR3(int etId, float spd1l, float spd1m, float spd1h, float spd2l, float spd2m, float spd2h)",
+        "根据 Rank (低/中/高) 设置子弹管理器 etId 的 speed1 和 speed2。"
+    ],
+    "618": [
+        "etSpeedR5(int etId, float spd1l, float spd1ml, float spd1m, float spd1mh, float spd1h, ...)",
+        "根据 Rank (5档) 设置子弹管理器 etId 的 speed1 和 speed2。"
+    ],
+    "619": [
+        "etSpeedR2(int etId, float spd1l, float spd1h, float spd2l, float spd2h)",
+        "根据 Rank (低/高) 设置子弹管理器 etId 的 speed1 和 speed2。"
+    ],
+    "620": [
+        "etCountR3(int etId, int cnt1l, int cnt1m, int cnt1h, int cnt2l, int cnt2m, int cnt2h)",
+        "根据 Rank (低/中/高) 设置子弹管理器 etId 的 count1 和 count2。"
+    ],
+    "621": [
+        "etCountR5(int etId, int cnt1l, int cnt1ml, int cnt1m, int cnt1mh, int cnt1h, ...)",
+        "根据 Rank (5档) 设置子弹管理器 etId 的 count1 和 count2。"
+    ],
+    "622": [
+        "etCountR2(int etId, int cnt1l, int cnt1h, int cnt2l, int cnt2h)",
+        "根据 Rank (低/高) 设置子弹管理器 etId 的 count1 和 count2。"
+    ],
+    "623": [
+        "angleToPlayer(float var, float x, float y)",
+        "获取从坐标 (x,y) 到玩家的角度，并存入 var。"
+    ],
+    "624": [
+        "etSpeedD(int etId, float spd1e, float spd1n, float spd1h, float spd1l, ...)",
+        "根据难度 (E/N/H/L) 设置子弹管理器 etId 的 speed1 和 speed2。"
+    ],
+    "625": [
+        "etCountD(int etId, int cnt1e, int cnt1n, int cnt1h, int cnt1l, ...)",
+        "根据难度 (E/N/H/L) 设置子弹管理器 etId 的 count1 和 count2。"
+    ],
+    "626": [
+        "etOffsetRad(int etId, float angle, float radius)",
+        "设置子弹管理器 etId 生成子弹的相对偏移。会与 etOffset 叠加。"
+    ],
+    "627": [
+        "etDist(int etId, float dist)",
+        "设置子弹管理器 etId 生成子弹的初始移动距离为 dist。"
+    ],
+    "628": [
+        "etOffsetAbs(int etId, float x, float y)",
+        "设置子弹管理器 etId 生成子弹的绝对位置偏移为 (x,y)。"
+    ],
+    "629": [
+        "fog(float r, int color)",
+        "设置调用者的雾效半径为 r，颜色为 color (RGB反序)。"
+    ],
+    "630": [
+        "callSTD(int switch)",
+        "将 STD 脚本的执行指针设置到 STD ins_16(switch) 处。"
+    ],
+    "631": [
+        "lifeHide(int time)",
+        "隐藏 Boss 血条 time 帧。"
+    ],
+    "632": [
+        "funcSet(int id)",
+        "设置一个游戏每帧都会执行的硬编码函数。"
+    ],
+    "633": [
+        "flagExtDmg(int state)",
+        "设置外部伤害标志。开启后，调用者每帧会受到存储在 BI3 中的伤害。"
+    ],
+    "634": [
+        "setHitboxFunc(int id)",
+        "使调用者使用一个特殊的函数来判断与玩家的碰撞。"
+    ],
+    "635": [
+        "etCancel2(float r)",
+        "与 etCancel 相同，但不消除具有炸弹护盾的子弹。"
+    ],
+    "636": [
+        "etClear2(float r)",
+        "与 etClear 相同，但不消除具有炸弹护盾的子弹。"
+    ],
+    "637": [
+        "funcCall(int id)",
+        "与 funcSet 相同，但函数只被调用一次。"
+    ],
+    "638": [
+        "scoreAdd(int n)",
+        "将分数增加 n。如果分数低于0会发生下溢。"
+    ],
+    "639": [
+        "funcSet2(int id)",
+        "与 funcSet 相同，但设置一个未知标志为 1 (funcSet 设为 0)。"
+    ],
+    "640": [
+        "etExSub(int etId, int index, string s)",
+        "设置子弹管理器 etId 中索引为 index 的变换的字符串参数为 s。"
+    ],
+    "641": [
+        "etExSubtract(int etId)",
+        "将 etEx 和 etEx2 使用的索引减 1，除非它已经是 0。"
+    ],
+    "700": [
+        "laserNew(int etId, float init_length, float final_length, float unknown, float width)",
+        "设置激光的基本参数。"
+    ],
+    "701": [
+        "laserTiming(int edId, int startup_time, int expand_time, int duration, int shrink_time, int init_flags)",
+        "设置无限长激光的时间参数。对于曲线激光，startup_time 指定激光长度。"
+    ],
+    "702": [
+        "laserOn(int edId)",
+        "发射一条直线激光。"
+    ],
+    "703": [
+        "laserStOn(int etId, int laser_id)",
+        "发射一条无限长激光，并分配 ID 为 laser_id。"
+    ],
+    "704": [
+        "laserOffset(int laser_id, float x, float y)",
+        "设置 ID 为 laser_id 的无限长激光的位置。"
+    ],
+    "705": [
+        "laserTrajectory(int laser_id, float x_speed, float y_speed)",
+        "设置 ID 为 laser_id 的无限长激光的位置速度。"
+    ],
+    "706": [
+        "laserStLength(int laser_id, float speed)",
+        "设置 ID 为 laser_id 的无限长激光的速度。"
+    ],
+    "707": [
+        "laserStWidth(int laser_id, float width)",
+        "设置 ID 为 laser_id 的无限长激光的宽度。"
+    ],
+    "708": [
+        "laserStAngle(int laser_id, float angle)",
+        "设置 ID 为 laser_id 的无限长激光的角度。"
+    ],
+    "709": [
+        "laserStRotation(int laser_id, float angular_vel)",
+        "设置 ID 为 laser_id 的无限长激光的角速度。"
+    ],
+    "710": [
+        "laserStEnd(int laser_id)",
+        "清除 ID 为 laser_id 的激光。"
+    ],
+    "711": [
+        "laserCuOn(int etId)",
+        "发射一条曲线激光。"
+    ],
+    "712": [
+        "etCancelRect(float w, float h)",
+        "消除一个宽高为 w, h 的矩形区域内的所有子弹。"
+    ],
+    "713": [
+        "unknown713(int etId, int laser_id)",
+        "发射一条'光束'激光。已损坏。"
+    ],
+    "714": [
+        "unknown714(int laser_id, int unknown)",
+        "对'光束'激光执行某些操作。已损坏。"
+    ],
+    "800": [
+        "enmCall(int id, string sub)",
+        "使 ID 为 id 的敌人停止当前所有子程序并执行 sub。"
+    ],
+    "801": [
+        "enmPos(float varX, float varY, int id)",
+        "将 ID 为 id 的敌人的坐标存入 (varX, varY)。"
+    ],
+    "802": [
+        "broadcastInterrupt(int slot)",
+        "对所有存在的 Boss，触发由 setInterrupt 在槽位 slot 设置的中断。"
+    ],
+    "900": [
+        "debug900()",
+        "无可用描述。"
+    ],
+    "901": [
+        "debug901()",
+        "无可用描述。"
+    ],
+    "902": [
+        "debug902()",
+        "无可用描述。"
+    ],
+    "903": [
+        "debug903()",
+        "无可用描述。"
+    ],
+    "904": [
+        "debug904()",
+        "无可用描述。"
+    ],
+    "1000": [
+        "spec0()",
+        "无可用描述。"
+    ],
+    "1001": [
+        "spec1()",
+        "无可用描述。"
+    ],
+    "1002": [
+        "spec2()",
+        "打开商店。"
+    ],
+    "1003": [
+        "spec3()",
+        "无可用描述。"
+    ],
+    "1004": [
+        "spec4(int wave)",
+        "设置当前波数为 wave。"
+    ],
+    "1005": [
+        "spec5()",
+        "将当前波数加 1。"
+    ],
+    "1006": [
+        "spec6(string name)",
+        "设置当前波数的名称为 name。"
+    ],
+    "1007": [
+        "spec7()",
+        "无可用描述。"
+    ],
+    "1008": [
+        "spec8()",
+        "如果难度值小于 7，则将其加 1。"
+    ],
+    "1009": [
+        "spec9()",
+        "无可用描述。"
+    ],
+    "1010": [
+        "spec10()",
+        "清除加权选择器数据。"
+    ],
+    "1011": [
+        "spec11(int subID, int weight)",
+        "向加权选择器数据中添加权重为 weight 的 subID。"
+    ],
+    "1012": [
+        "spec12(int flags)",
+        "调用加权选择器，生成一个敌人。"
+    ],
+    "1013": [
+        "spec13(int slot, int d0, int d1, int d2, int d3, int d4, int d5, int d6, int d7)",
+        "将一组数字写入指定的存储槽位。"
+    ],
+    "1014": [
+        "spec14()",
+        "无可用描述。"
+    ],
+    "1015": [
+        "spec15(int &var, int slot)",
+        "根据当前难度，从指定槽位中检索一个数字到 &var。"
+    ],
+    "1016": [
+        "spec16()",
+        "无可用描述。"
+    ],
+    "1017": [
+        "spec17()",
+        "完成关卡并显示卡牌选择界面。"
+    ],
+    "1018": [
+        "spec18()",
+        "无可用描述。"
+    ],
+    "1019": [
+        "spec19()",
+        "以“失败”状态完成关卡。"
+    ],
+    "1020": [
+        "spec20()",
+        "无可用描述。"
+    ],
+    "1021": [
+        "ins_1021()",
+        "无可用描述。"
+    ],
+    "1022": [
+        "ins_1022()",
+        "无可用描述。"
+    ],
+    "1023": [
+        "ins_1023()",
+        "无可用描述。"
+    ],
+    "1024": [
+        "ins_1024()",
+        "无可用描述。"
+    ],
+    "1025": [
+        "ins_1025()",
+        "无可用描述。"
+    ]
+}

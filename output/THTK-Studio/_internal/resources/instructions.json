@@ -1,0 +1,542 @@
+{
+    "0": {
+        "name": "nop()",
+        "description": "无操作。"
+    },
+    "1": {
+        "name": "delete()",
+        "description": "销毁该图形。"
+    },
+    "2": {
+        "name": "static()",
+        "description": "冻结该图形，直到其被外部销毁。"
+    },
+    "3": {
+        "name": "stop()",
+        "description": "停止执行脚本（至少暂时停止），但保持图形存活。"
+    },
+    "4": {
+        "name": "stopHide()",
+        "description": "此指令类似于 `stop`，但还会通过清除可见性标志来隐藏图形（参见 `visible`）。（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "5": {
+        "name": "interruptLabel(intn)",
+        "description": "一个 `interrupt` 的中断标签。执行时，它不进行任何操作。"
+    },
+    "6": {
+        "name": "wait(intt)",
+        "description": "等待 `t` 帧。"
+    },
+    "7": {
+        "name": "caseReturn()",
+        "description": "可在 `interruptLabel` 代码块末尾使用，以返回到虚拟机接收到 `interrupt` 之前的那一刻。"
+    },
+    "100": {
+        "name": "iset(int&a,intb)",
+        "description": "执行 `a = b`。"
+    },
+    "101": {
+        "name": "fset(float&a,floatb)",
+        "description": "执行 `a = b`。"
+    },
+    "102": {
+        "name": "iadd(int&a,intb)",
+        "description": "执行 `a += b`。"
+    },
+    "103": {
+        "name": "fadd(float&a,floatb)",
+        "description": "执行 `a += b`。"
+    },
+    "104": {
+        "name": "isub(int&a,intb)",
+        "description": "执行 `a -= b`。"
+    },
+    "105": {
+        "name": "fsub(float&a,floatb)",
+        "description": "执行 `a -= b`。"
+    },
+    "106": {
+        "name": "imul(int&a,intb)",
+        "description": "执行 `a *= b`。"
+    },
+    "107": {
+        "name": "fmul(float&a,floatb)",
+        "description": "执行 `a *= b`。"
+    },
+    "108": {
+        "name": "idiv(int&a,intb)",
+        "description": "执行 `a /= b`。"
+    },
+    "109": {
+        "name": "fdiv(float&a,floatb)",
+        "description": "执行 `a /= b`。"
+    },
+    "110": {
+        "name": "imod(int&a,intb)",
+        "description": "执行 `a %= b`。"
+    },
+    "111": {
+        "name": "fmod(float&a,floatb)",
+        "description": "执行 `a %= b`。"
+    },
+    "112": {
+        "name": "isetAdd(int&x,inta,intb)",
+        "description": "执行 `a = b + c`。"
+    },
+    "113": {
+        "name": "fsetAdd(float&x,floata,floatb)",
+        "description": "执行 `a = b + c`。"
+    },
+    "114": {
+        "name": "isetSub(int&x,inta,intb)",
+        "description": "执行 `a = b - c`。"
+    },
+    "115": {
+        "name": "fsetSub(float&x,floata,floatb)",
+        "description": "执行 `a = b - c`。"
+    },
+    "116": {
+        "name": "isetMul(int&x,inta,intb)",
+        "description": "执行 `a = b * c`。"
+    },
+    "117": {
+        "name": "fsetMul(float&x,floata,floatb)",
+        "description": "执行 `a = b * c`。"
+    },
+    "118": {
+        "name": "isetDiv(int&x,inta,intb)",
+        "description": "执行 `a = b / c`。"
+    },
+    "119": {
+        "name": "fsetDiv(float&x,floata,floatb)",
+        "description": "执行 `a = b / c`。"
+    },
+    "120": {
+        "name": "isetMod(int&x,inta,intb)",
+        "description": "执行 `a = b % c`。"
+    },
+    "121": {
+        "name": "fsetMod(float&x,floata,floatb)",
+        "description": "执行 `a = b % c`。"
+    },
+    "122": {
+        "name": "isetRand(int&x,intn)",
+        "description": "使用 `动画RNG` 抽取一个随机整数 `0 <= x < n`。"
+    },
+    "123": {
+        "name": "fsetRand(float&x,floatr)",
+        "description": "使用 `动画RNG` 抽取一个随机浮点数 `0 <= x <= r`。"
+    },
+    "124": {
+        "name": "fsin(float&dest,floatθ)",
+        "description": "计算 `sin(θ)`（`θ` 以弧度为单位）。"
+    },
+    "125": {
+        "name": "fcos(float&dest,floatθ)",
+        "description": "计算 `cos(θ)`（`θ` 以弧度为单位）。"
+    },
+    "126": {
+        "name": "ftan(float&dest,floatθ)",
+        "description": "计算 `tan(θ)`（`θ` 以弧度为单位）。"
+    },
+    "127": {
+        "name": "facos(float&dest,floatx)",
+        "description": "计算 `acos(x)`（输出以弧度为单位）。"
+    },
+    "128": {
+        "name": "fatan(float&dest,floatm)",
+        "description": "计算 `atan(m)`（输出以弧度为单位）。"
+    },
+    "129": {
+        "name": "validRad(float&θ)",
+        "description": "将一个角度模 `2*PI` 归约到 `[-PI, +PI]` 的范围内。"
+    },
+    "130": {
+        "name": "circlePos(float&x,float&y,floatθ,floatr)",
+        "description": "`x = r * cos(θ); y = r * sin(θ);`"
+    },
+    "131": {
+        "name": "circlePosRand(float&x,float&y,floatrmin,floatrmax)",
+        "description": "均匀地在 `rmin` 和 `rmax` 给出的区间内抽取一个随机半径 `r`，并选取一个随机角度（两者都使用 `动画RNG`）。然后基本上对这些值执行 `circlePos` 计算。"
+    },
+    "200": {
+        "name": "jmp(intdest,intt)",
+        "description": "跳转到脚本开头起的字节偏移量 `dest` 处，并将时间设置为 `t`。`thanm` 接受 `dest` 的标签名。"
+    },
+    "201": {
+        "name": "jmpDec(int&x,intdest,intt)",
+        "description": "递减 `x`，然后如果 `x > 0` 则跳转。你可以使用它来固定次数地重复一个循环。"
+    },
+    "202": {
+        "name": "ije(inta,intb,intdest,intt)",
+        "description": "如果 `a == b` 则跳转。"
+    },
+    "203": {
+        "name": "fje(floata,floatb,intdest,intt)",
+        "description": "如果 `a == b` 则跳转。"
+    },
+    "204": {
+        "name": "ijne(inta,intb,intdest,intt)",
+        "description": "如果 `a != b` 则跳转。"
+    },
+    "205": {
+        "name": "fjne(floata,floatb,intdest,intt)",
+        "description": "如果 `a != b` 则跳转。"
+    },
+    "206": {
+        "name": "ijl(inta,intb,intdest,intt)",
+        "description": "如果 `a < b` 则跳转。"
+    },
+    "207": {
+        "name": "fjl(floata,floatb,intdest,intt)",
+        "description": "如果 `a < b` 则跳转。"
+    },
+    "208": {
+        "name": "ijle(inta,intb,intdest,intt)",
+        "description": "如果 `a <= b` 则跳转。"
+    },
+    "209": {
+        "name": "fjle(floata,floatb,intdest,intt)",
+        "description": "如果 `a <= b` 则跳转。"
+    },
+    "210": {
+        "name": "ijg(inta,intb,intdest,intt)",
+        "description": "如果 `a > b` 则跳转。"
+    },
+    "211": {
+        "name": "fjg(floata,floatb,intdest,intt)",
+        "description": "如果 `a > b` 则跳转。"
+    },
+    "212": {
+        "name": "ijge(inta,intb,intdest,intt)",
+        "description": "如果 `a >= b` 则跳转。"
+    },
+    "213": {
+        "name": "fjge(floata,floatb,intdest,intt)",
+        "description": "如果 `a >= b` 则跳转。"
+    },
+    "300": {
+        "name": "sprite(intid)",
+        "description": "将此虚拟机使用的图像设置为 ANM 文件中定义的精灵之一。"
+    },
+    "301": {
+        "name": "spriteRand(inta,intb)",
+        "description": "从 `a`（包含）到 `a + b`（不包含）的范围内随机选择一个精灵。"
+    },
+    "302": {
+        "name": "type(intmode)",
+        "description": "决定 ANM 的渲染方式。"
+    },
+    "303": {
+        "name": "blendMode(intmode)",
+        "description": "设置颜色混合模式。"
+    },
+    "304": {
+        "name": "layer(intn)",
+        "description": "设置 ANM 的图层。"
+    },
+    "305": {
+        "name": "zWriteDisable(intdisable)",
+        "description": "如果 `disable` 为 1，则禁用写入深度缓冲区。否则启用。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "306": {
+        "name": "ins_306(intenable)",
+        "description": "设置一个与 STD 相关的位标志状态。（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "307": {
+        "name": "randMode(intmode)",
+        "description": "`th128:randMode` 的一个（`完全无效的？`）残留物。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "308": {
+        "name": "flipX()",
+        "description": "切换 X 轴上的镜像。"
+    },
+    "309": {
+        "name": "flipY()",
+        "description": "切换 Y 轴上的镜像。"
+    },
+    "310": {
+        "name": "visible(bytevisible)",
+        "description": "设置可见性标志（1 = 可见）。不可见的图形在渲染过程中会被跳过。"
+    },
+    "311": {
+        "name": "resampleMode(intn)",
+        "description": "决定当缩放比例大于或小于 1.0 时，精灵如何重新采样。"
+    },
+    "312": {
+        "name": "scrollMode(intxmode,intymode)",
+        "description": "决定当像 `scaleUV`、`scrollX` 或 `texCircle` 这样的指令导致精灵从 `(0,0)-(1,1)` 矩形之外的 `uv 坐标` 拉取图像数据时，精灵如何拉取。"
+    },
+    "313": {
+        "name": "resolutionMode(intn)",
+        "description": "决定游戏的某些方面如何缩放到当前分辨率。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "314": {
+        "name": "ins_314(intenable)",
+        "description": "设置一个位标志。当该位标志启用时，图形会随着其父级旋转而移动。（想象一个人拿着盾牌；当人旋转时，盾牌围绕他们移动）（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "315": {
+        "name": "colorizeChildren(byteenable)",
+        "description": "设置一个位标志，使得着色（参见 `color`）也会影响子图形。"
+    },
+    "316": {
+        "name": "ins_316()",
+        "description": "启用一个未知的位标志。使用 `ins_317` 清除。（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "317": {
+        "name": "ins_317()",
+        "description": "清除来自 `ins_316` 的位标志。（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "400": {
+        "name": "pos(floatx,floaty,floatz)",
+        "description": "设置图形的位置。"
+    },
+    "401": {
+        "name": "rotate(floatrx,floatry,floatrz)",
+        "description": "设置图形的旋转。对于 2D 对象，只有 Z 旋转重要。"
+    },
+    "402": {
+        "name": "scale(floatsx,floatsy)",
+        "description": "沿 X 和 Y 轴独立缩放 ANM。图形围绕其锚点（参见 `anchor`）生长。某些 `特殊绘制指令` 赋予 X 和 Y 缩放特殊含义。"
+    },
+    "403": {
+        "name": "alpha(intalpha)",
+        "description": "将 Alpha（不透明度）设置为 0-255 的值。"
+    },
+    "404": {
+        "name": "color(intr,intg,intb)",
+        "description": "设置一个颜色，该颜色会与此精灵混合。"
+    },
+    "405": {
+        "name": "alpha2(intalpha)",
+        "description": "为渐变设置第二个 Alpha 值。渐变被某些 `特殊绘制指令` 使用，并且可以通过 `colorMode` 在常规精灵上启用。"
+    },
+    "406": {
+        "name": "color2(intr,intg,intb)",
+        "description": "为渐变设置第二个颜色。渐变被某些 `特殊绘制指令` 使用，并且可以通过 `colorMode` 在常规精灵上启用。"
+    },
+    "407": {
+        "name": "posTime(intt,intmode,floatx,floaty,floatz)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `pos` 改变为给定值。"
+    },
+    "408": {
+        "name": "colorTime(intt,intmode,intr,intg,intb)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `color` 改变为给定值。"
+    },
+    "409": {
+        "name": "alphaTime(intt,intmode,intalpha)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `alpha` 改变为给定值。"
+    },
+    "410": {
+        "name": "rotateTime(intt,intmode,floatrx,floatry,floatrz)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `rotate` 改变为给定值。"
+    },
+    "411": {
+        "name": "rotateTime2D(intt,intmode,floatrz)",
+        "description": "`rotateTime` 的紧凑版本，仅插值 Z 旋转。"
+    },
+    "412": {
+        "name": "scaleTime(intt,intmode,floatsx,floatsy)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `scale` 改变为给定值。"
+    },
+    "413": {
+        "name": "color2Time(intt,intmode,intr,intg,intb)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `color2` 改变为给定值。"
+    },
+    "414": {
+        "name": "alpha2Time(intt,intmode,intalpha)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `alpha2` 改变为给定值。"
+    },
+    "415": {
+        "name": "angleVel(floatωx,floatωy,floatωz)",
+        "description": "设置恒定的角速度，单位为弧度/帧。"
+    },
+    "416": {
+        "name": "scaleGrowth(floatgx,floatgy)",
+        "description": "每帧将 `scale` 的值增加，即 `sx -> sx + gx` 和 `sy -> sy + gy`。基本上，`scaleGrowth` 之于 `scale` 就如同 `angleVel` 之于 `rotate`。（它们甚至共享实现细节...）"
+    },
+    "417": {
+        "name": "alphaTimeLinear(intalpha,intt)",
+        "description": "未测试：在接下来的 `t` 帧内，将 Alpha 线性改变为 `alpha`。"
+    },
+    "418": {
+        "name": "ins_418()",
+        "description": "一个奇怪且 `完全未使用` 的指令，似乎根据 anm 的坐标从图像文件中选择一个新的精灵。"
+    },
+    "419": {
+        "name": "ins_419(intenable)",
+        "description": "设置一个位标志，该标志会有效地每帧调用 `ins_418`。"
+    },
+    "420": {
+        "name": "moveBezier(intt,floatx1,floaty1,floatz1,floatx2,floaty2,floatz2,floatx3,floaty3,floatz3)",
+        "description": "在 `t` 帧内，使用贝塞尔插值移动到 `(x2, y2, z2)`。"
+    },
+    "421": {
+        "name": "anchor(shorth,shortv)",
+        "description": "设置精灵的水平和垂直锚定。注意参数各为两个字节。如需进一步微调，请参见 `anchorOffset`。"
+    },
+    "422": {
+        "name": "ins_422()",
+        "description": "将 `pos_3` 复制到 `pos` 中，并将 `pos_3` 清零...（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "423": {
+        "name": "colorMode(intmode)",
+        "description": "允许你在常规精灵上启用渐变。"
+    },
+    "424": {
+        "name": "rotateAuto(bytemode)",
+        "description": "设置自动旋转标志，该标志会使图形旋转以面向其运动方向。"
+    },
+    "425": {
+        "name": "scrollX(floatvel)",
+        "description": "每帧将 `vel` 加到 `纹理 u 坐标` 上（以 `1 / 总图像宽度` 为单位），导致显示的精灵在图像文件中水平滚动。"
+    },
+    "426": {
+        "name": "scrollY(floatvel)",
+        "description": "每帧将 `vel` 加到 `纹理 v 坐标` 上（以 `1 / 总图像高度` 为单位），导致显示的精灵在图像文件中垂直滚动。"
+    },
+    "427": {
+        "name": "scrollXTime(intt,intmode,floatvel)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `scrollX` 改变为给定值。"
+    },
+    "428": {
+        "name": "scrollYTime(intt,intmode,floatvel)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `scrollY` 改变为给定值。"
+    },
+    "429": {
+        "name": "scaleUV(floatuscale,floatvscale)",
+        "description": "缩放 `纹理 uv 坐标`。"
+    },
+    "430": {
+        "name": "scaleUVTime(intt,intmode,floatuscale,floatvscale)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `scaleUV` 改变为给定值。"
+    },
+    "431": {
+        "name": "ins_431(intenable)",
+        "description": "设置一个未知位标志的状态。（注意：data-wip=\"2\" - 完全未知）"
+    },
+    "432": {
+        "name": "slowdownImmune(intenable)",
+        "description": "使虚拟机免疫游戏速度变化。仅用于拍照游戏。"
+    },
+    "433": {
+        "name": "ins_433(intt,intmode,floatx,floaty)",
+        "description": "看起来像是 `posTime` 的 2D 版本？（`就这些吗？似乎毫无意义`）（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "434": {
+        "name": "scale2(floatsx,floatsy)",
+        "description": "据我们所知，`这只是一组额外的缩放因子，它们单独（乘法地）应用于 `scale`。"
+    },
+    "435": {
+        "name": "scale2Time(intt,intmode,floatsx,floatsy)",
+        "description": "在接下来的 `t` 帧内，使用 `插值模式` `mode` 将 `scale2` 改变为给定值。"
+    },
+    "436": {
+        "name": "anchorOffset(floatdx,floatdy)",
+        "description": "在源图像中将精灵的锚点向右偏移 `dx` 像素，向下偏移 `dy` 像素。对于不对称的子弹精灵很重要，因为锚点位置是旋转和缩放的中心点。"
+    },
+    "437": {
+        "name": "rotationMode(intmode)",
+        "description": "设置 3D 旋转的约定（例如 XYZ, ZYX 等）。待办：定义模式。"
+    },
+    "438": {
+        "name": "originMode(intmode)",
+        "description": "决定精灵使用的原点。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "500": {
+        "name": "scriptNew(intscript)",
+        "description": "创建子图形的标准方法。"
+    },
+    "501": {
+        "name": "scriptNewUI(intscript)",
+        "description": "创建一个子图形，但将其插入到 `UI 列表` 的末尾。"
+    },
+    "502": {
+        "name": "scriptNewFront(intscript)",
+        "description": "创建一个子图形，但将其插入到 `世界列表` 的前端而不是末尾。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "503": {
+        "name": "scriptNewUIFront(intscript)",
+        "description": "创建一个子图形，但将其插入到 `UI 列表` 的前端。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "504": {
+        "name": "scriptNewRoot(intscript)",
+        "description": "创建一个新的根虚拟机。（即新的虚拟机将没有父级）（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "505": {
+        "name": "scriptNewPos(intscript,floatx,floaty)",
+        "description": "在距离此图形一定偏移处创建一个子图形。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "506": {
+        "name": "scriptNewRootPos(intscript,floatx,floaty)",
+        "description": "结合了 `scriptNewRoot` 和 `scriptNewPos` 的效果。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "507": {
+        "name": "ins_507(intignore)",
+        "description": "设置一个位标志。如果该位标志为 1，则在许多不同的上下文中，ANM 将忽略例如 `父级的位置/缩放/旋转等`，并且允许它使用例如 `originMode`，就好像 `它是根图形一样`。"
+    },
+    "508": {
+        "name": "effectNew(intkind)",
+        "description": "创建一个特殊的子图形，该子图形可能具有额外的硬编码行为。（注意：data-wip=\"1\" - 未完全理解）"
+    },
+    "509": {
+        "name": "copyVars()",
+        "description": "在子图形上调用时，从其父级复制若干变量。"
+    },
+    "600": {
+        "name": "texCircle(intnmax)",
+        "description": "将纹理包裹成一个细环（圆环）。参数决定内部缓冲区的大小。"
+    },
+    "601": {
+        "name": "texArcEven(intnmax)",
+        "description": "与 `texArc` 相同，但尴尬地以角度 0 为中心，而不是从 0 开始。"
+    },
+    "602": {
+        "name": "texArc(intnmax)",
+        "description": "类似于 `texCircle`，但创建一个从零角度开始并顺时针运行的弧段。"
+    },
+    "603": {
+        "name": "drawRect(floatw,floath)",
+        "description": "绘制一个具有给定尺寸的填充矩形。无渐变。如果你想通过 ECL 控制尺寸，考虑传入 `1.0` 并改为更改 anm 的缩放比例。"
+    },
+    "604": {
+        "name": "drawPoly(floatradius,intnInit)",
+        "description": "绘制一个填充的正 n 边形，具有从中心到边缘的渐变。"
+    },
+    "605": {
+        "name": "drawPolyBorder(floatradius,intnInit)",
+        "description": "类似于 `drawPoly`，但绘制 1 像素宽的边框。无渐变。"
+    },
+    "606": {
+        "name": "drawRectGrad(floatw,floath)",
+        "description": "与 `drawRect` 相同，但支持渐变（`color2`），渐变从左到右。"
+    },
+    "607": {
+        "name": "drawRectRot(floatw,floath)",
+        "description": "`drawRect` 的一个变体，用于旋转的矩形，在一定程度上平滑了边缘。"
+    },
+    "608": {
+        "name": "drawRectRotGrad(floatw,floath)",
+        "description": "与 `drawRect` 相同，但支持渐变（`color2`），渐变从左到右。"
+    },
+    "609": {
+        "name": "texCylinder3D(intnmax)",
+        "description": "将纹理包裹成圆柱体段的 3D 表面。参数决定内部缓冲区的大小。"
+    },
+    "610": {
+        "name": "texRing3D(intnmax)",
+        "description": "将纹理包裹成一个放置在 3D 空间中的细环（即舞台背景）。参数决定内部缓冲区的大小。"
+    },
+    "611": {
+        "name": "drawRing(floatradius,floatthickness,intnInit)",
+        "description": "绘制一个具有 n 条边的填充圆环。无渐变。"
+    },
+    "612": {
+        "name": "drawRectBorder(floatw,floath)",
+        "description": "绘制一个 1 像素厚的矩形轮廓。无渐变。"
+    },
+    "613": {
+        "name": "drawLine(floatlen,floatunused)",
+        "description": "绘制一条 1 像素厚的水平线。第二个参数未使用。无渐变。"
+    }
+}

@@ -1,0 +1,123 @@
+{
+  "$I0": {
+    "id": 10000,
+    "type": "integer",
+    "description": "General purpose local integer register 0."
+  },
+  "$I1": {
+    "id": 10001,
+    "type": "integer",
+    "description": "General purpose local integer register 1."
+  },
+  "$I2": {
+    "id": 10002,
+    "type": "integer",
+    "description": "General purpose local integer register 2."
+  },
+  "$I3": {
+    "id": 10003,
+    "type": "integer",
+    "description": "General purpose local integer register 3."
+  },
+  "%F0": {
+    "id": 10004,
+    "type": "float",
+    "description": "General purpose local floating-point register 0."
+  },
+  "%F1": {
+    "id": 10005,
+    "type": "float",
+    "description": "General purpose local floating-point register 1."
+  },
+  "%F2": {
+    "id": 10006,
+    "type": "float",
+    "description": "General purpose local floating-point register 2."
+  },
+  "%F3": {
+    "id": 10007,
+    "type": "float",
+    "description": "General purpose local floating-point register 3."
+  },
+  "$I4": {
+    "id": 10008,
+    "type": "integer",
+    "description": "Another general-purpose int? (#4)"
+  },
+  "$I5": {
+    "id": 10009,
+    "type": "integer",
+    "description": "Another general-purpose int? (#5) Strangely, it's only used by photo games."
+  },
+  "%RANDRAD": {
+    "id": 10010,
+    "type": "float",
+    "description": "Draws a random value from -PI to PI using the animation RNG. You can modify this range by editing %RANDRADLIMIT."
+  },
+  "%RANDF": {
+    "id": 10011,
+    "type": "float",
+    "description": "Draws a random value from 0.0 to 1.0 using the animation RNG. You can modify this range by editing %RANDFLIMIT."
+  },
+  "%RANDF2": {
+    "id": 10012,
+    "type": "float",
+    "description": "Draws a random value from -1.0 to 1.0 using the animation RNG. You can modify this range by editing $RANDLIMIT."
+  },
+  "%POS_X": {
+    "id": 10013,
+    "type": "float",
+    "description": "Position x, as set by pos."
+  },
+  "%POS_Y": {
+    "id": 10014,
+    "type": "float",
+    "description": "Position y, as set by pos."
+  },
+  "%POS_Z": {
+    "id": 10015,
+    "type": "float",
+    "description": "Position z, as set by pos."
+  },
+  "VAR_10016": {
+    "id": 10016,
+    "name": "[10016.0f]",
+    "type": "float",
+    "description": "Stage BG camera's x position, plus some vector related to its rocking..."
+  },
+  "VAR_10017": {
+    "id": 10017,
+    "name": "[10017.0f]",
+    "type": "float",
+    "description": "Stage BG camera's y position, plus some vector related to its rocking..."
+  },
+  "VAR_10018": {
+    "id": 10018,
+    "name": "[10018.0f]",
+    "type": "float",
+    "description": "Stage BG camera's z position, plus some vector related to its rocking..."
+  },
+  "VAR_10019": {
+    "id": 10019,
+    "name": "[10019.0f]",
+    "type": "float",
+    "description": "x of normalized direction vector that the stage BG camera is facing. (what is it used for?)"
+  },
+  "VAR_10020": {
+    "id": 10020,
+    "name": "[10020.0f]",
+    "type": "float",
+    "description": "y of normalized direction vector that the stage BG camera is facing. (what is it used for?)"
+  },
+  "VAR_10021": {
+    "id": 10021,
+    "name": "[10021.0f]",
+    "type": "float",
+    "description": "z of normalized direction vector that the stage BG camera is facing. (what is it used for?)"
+  },
+  "$RAND": {
+    "id": 10022,
+    "type": "integer",
+    "description": "Draws a random integer from 0 (inclusive) to 65536 (exclusive) using the animation RNG. You can modify this range by editing $RANDLIMIT."
+    }
+}

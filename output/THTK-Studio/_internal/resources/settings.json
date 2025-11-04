@@ -1,0 +1,15 @@
+{
+    "user_thanm_path": "",
+    "user_anmm_path": "",
+    "user_thmsg_path": "",
+    "user_msg_ref_path": "",
+    "user_msg_syntax_path": "",
+    "user_variables_path": "",
+    "user_instructions_path": "",
+    "user_anm_syntax_path": "",
+    "user_thstd_path": "",
+    "user_thecl_path": "",
+    "user_eclmap_path": "D:/东方Project/3Ajsj/代码相关/ANM/THTK-GUI-Master/resources/default.eclm",
+    "user_std_ref_path": "",
+    "user_ecl_ref_path": "D:/东方Project/3Ajsj/代码相关/ANM/THTK-GUI-Master/resources/thecl_ref.json"
+}
