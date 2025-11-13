@@ -92,7 +92,7 @@ class ThmsgWrapper:
     # ==================================================================
 
     def _translate_dmsg_to_txt(self, dmsg_path: Path, output_path: Path, mode: str = "default",encoding: str="Shift-JIS"):
-        """[FIXED] 根据参考文件将 dmsg 文件翻译为可读的 txt 格式，使用4个空格进行缩进。"""
+        """根据参考文件将 dmsg 文件翻译为可读的 txt 格式，使用4个空格进行缩进。"""
         original_dmsg_lines = dmsg_path.read_text(encoding=encoding, errors='ignore').splitlines()
         translated_lines = []
         indent = "    " # 使用4个空格作为缩进
@@ -121,7 +121,7 @@ class ThmsgWrapper:
         output_path.write_text('\n'.join(translated_lines) + '\n', encoding='utf-8')
 
     def _recover_txt_to_dmsg(self, txt_path: Path, output_path: Path, encoding: str="Shift-JIS"):
-        """[FIXED] 将翻译后的 txt 文件恢复为 dmsg 格式，生成带 \t 的 dmsg。"""
+        """将翻译后的 txt 文件恢复为 dmsg 格式，生成带 \t 的 dmsg。"""
         txt_lines = txt_path.read_text(encoding='utf-8').splitlines()
         recovered_lines = []
         

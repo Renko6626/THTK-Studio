@@ -4,6 +4,7 @@ import subprocess
 import os
 from pathlib import Path
 from typing import List, Optional
+from PyQt6.QtWidgets import QMessageBox
 
 class TheclError(Exception):
     """当 thecl 子进程返回错误时抛出此异常。"""
@@ -56,8 +57,32 @@ class TheclWrapper:
             if result.stdout.strip():
                 print(f"📋 stdout:\n{result.stdout.strip()}")
             if result.stderr.strip():
-                # thecl 可能会在 stderr 输出一些非错误信息，但如果返回码为0，我们只打印它
-                print(f"ℹ️ stderr:\n{result.stderr.strip()}")
+                # thecl 可能会在 stderr 输出一些非错误信息；但为防止忽略潜在问题，
+                # 即使返回码为 0，也弹出警告提示用户留意这些输出。
+                stderr_msg = result.stderr.strip()
+                print(f"ℹ️ stderr:\n{stderr_msg}")
+
+                # 粗略识别当前操作类型，给出更友好的提示文案
+                op = "操作"
+                if '-c' in args:
+                    op = "打包"
+                elif '-d' in args:
+                    op = "解包"
+                elif '-h' in args:
+                    op = "头文件生成"
+
+                title = "thecl 警告"
+                # 结合用户需求给出明确说明
+                # 例如：打包成功，但是存在错误/警告（stderr）
+                msg = (
+                    f"{op}成功，但检测到 thecl 的 stderr 输出，可能存在错误或警告。\n\n"
+                    f"提示：{op}成功但是存在错误，这就是：\n\n{stderr_msg}"
+                )
+                try:
+                    QMessageBox.warning(None, title, msg)
+                except Exception:
+                    # 若在无 GUI 环境下（例如命令行独立运行）无法弹窗，则忽略
+                    pass
 
             return result.stdout
             
@@ -95,6 +120,7 @@ class TheclWrapper:
         
         if self.eclmap_path:
             cmd.extend(['-m', str(self.eclmap_path.absolute())])
+            #pass
         if use_address_info:
             cmd.append('-x')
         if raw_dump:

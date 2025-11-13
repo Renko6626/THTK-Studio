@@ -9,7 +9,15 @@
     "user_anm_syntax_path": "",
     "user_thstd_path": "",
     "user_thecl_path": "",
-    "user_eclmap_path": "D:/东方Project/3Ajsj/代码相关/ANM/THTK-GUI-Master/resources/default.eclm",
+    "user_eclmap_path": "",
     "user_std_ref_path": "",
-    "user_ecl_ref_path": "D:/东方Project/3Ajsj/代码相关/ANM/THTK-GUI-Master/resources/thecl_ref.json"
+    "user_ecl_ref_path": "",
+    "autosave_enabled": true,
+    "autosave_interval_sec": 30,
+    "autosave_on_focus_out": true,
+    "ui_monospaced_only_default": true,
+    "ui_font_family": "",
+    "ui_font_size": 12,
+    "ui_minimap_enabled": true,
+    "ui_minimap_width": 64
 }

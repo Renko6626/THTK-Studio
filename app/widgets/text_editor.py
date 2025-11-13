@@ -1,23 +1,26 @@
 # 完整最终版 app/widgets/text_editor.py
 
 from PyQt6.QtWidgets import QPlainTextEdit, QTextEdit, QToolTip, QCompleter, QWidget
-from PyQt6.QtGui import QKeyEvent, QTextCharFormat, QTextCursor, QFont, QColor, QPainter, QPaintEvent, QTextFormat
-from PyQt6.QtCore import Qt, pyqtSignal, QStringListModel, QTimer, QRect, QSize
-import re
-
-# 导入QTextDocument
-from PyQt6.QtGui import QTextDocument
-
-from .syntax_highlighter import AnmSyntaxHighlighter
-from .search_panel import SearchPanel
-# app/widgets/text_editor.py
-
-from PyQt6.QtWidgets import QPlainTextEdit, QTextEdit, QToolTip, QCompleter, QWidget
-from PyQt6.QtGui import QKeyEvent, QTextCharFormat, QTextCursor, QFont, QColor, QPainter, QPaintEvent, QTextFormat, QSyntaxHighlighter
+from PyQt6.QtGui import (
+    QKeyEvent,
+    QTextCharFormat,
+    QTextCursor,
+    QFont,
+    QColor,
+    QPainter,
+    QPaintEvent,
+    QTextFormat,
+    QSyntaxHighlighter,
+    QTextDocument,
+    QLinearGradient,
+    QPen
+)
 from PyQt6.QtCore import Qt, pyqtSignal, QStringListModel, QTimer, QRect, QSize
 import re
 from PyQt6.QtWidgets import QStyledItemDelegate, QStyle
-from PyQt6.QtGui import QColor, QFont
+
+from .search_panel import SearchPanel
+# NOTE: syntax highlighter class names are dynamically assigned by handlers, avoid direct dependency on a specific one here.
 
 class LineNumberArea(QWidget):
     """用于显示行号的侧边栏控件。"""
@@ -31,10 +34,29 @@ class LineNumberArea(QWidget):
     def paintEvent(self, event: QPaintEvent):
         self.editor.lineNumberAreaPaintEvent(event)
 
+class MinimapArea(QWidget):
+    """右侧小地图控件。"""
+    def __init__(self, editor: "TextEditor"):
+        super().__init__(editor)
+        self.editor = editor
+
+    def sizeHint(self) -> QSize:
+        return QSize(self.editor.minimapWidth(), 0)
+
+    def paintEvent(self, event: QPaintEvent):
+        self.editor.minimapPaintEvent(event)
+    
+    def mousePressEvent(self, event):
+        self.editor.minimapMouseEvent(event)
+    
+    def mouseMoveEvent(self, event):
+        if event.buttons() & Qt.MouseButton.LeftButton:
+            self.editor.minimapMouseEvent(event)
+
 class TextEditor(QPlainTextEdit):
     """
-    [REVISED] 一个通用的、“被动”的文本编辑器核心。
-    它只负责显示文本和发射信号，所有分析和更新逻辑都由外部驱动。
+    一个通用的、“被动”的文本编辑器核心：负责文本显示与信号发射，
+    具体的分析与视图更新由外部（主窗口/处理器）驱动。
     """
     syntax_status_changed = pyqtSignal(bool, str)
     word_under_cursor_changed = pyqtSignal(str)
@@ -42,9 +64,9 @@ class TextEditor(QPlainTextEdit):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        # 颜色与边框走样式表；字体族与字号改由 QFont 控制，便于运行时调整
         self.setStyleSheet("""
             QPlainTextEdit {
-                font-family: 'Courier New', 'Consolas', monospace; font-size: 11pt;
                 background-color: #2b2b2b; color: #f8f8f2;
                 border: 1px solid #44475a; selection-background-color: #44475a;
             }
@@ -60,10 +82,14 @@ class TextEditor(QPlainTextEdit):
             pass
         
         self.line_number_area = LineNumberArea(self)
-        self.blockCountChanged.connect(self.updateLineNumberAreaWidth)
-        self.updateRequest.connect(self.updateLineNumberArea)
+        # 小地图
+        self._minimap_enabled = True
+        self._minimap_width = 64
+        self.minimap_area = MinimapArea(self)
+        self.blockCountChanged.connect(self.updateAuxiliaryAreasWidth)
+        self.updateRequest.connect(self._on_update_request)
         self.cursorPositionChanged.connect(self.highlightCurrentLine)
-        self.updateLineNumberAreaWidth(0)
+        self.updateAuxiliaryAreasWidth(0)
 
         self.setMouseTracking(True)
         self._last_hovered_word = None
@@ -124,7 +150,6 @@ class TextEditor(QPlainTextEdit):
         tooltip_font = QFont("Segoe UI", 10); tooltip_font.setWeight(QFont.Weight.Bold)
         QToolTip.setFont(tooltip_font)
 
-    # --- [NEW] 使用属性来安全地设置和获取高亮器 ---
     @property
     def highlighter(self) -> QSyntaxHighlighter | None:
         return self._highlighter
@@ -139,9 +164,6 @@ class TextEditor(QPlainTextEdit):
         if self._highlighter:
             self._highlighter.setDocument(self.document())
         
-        # 立即触发一次分析来应用新的高亮规则
-        #self.on_text_changed_lightweight()
-    # --- END NEW ---
 
     def update_completion_model(self):
         """由外部 (MainWindow) 调用的公共方法。"""
@@ -206,9 +228,9 @@ class TextEditor(QPlainTextEdit):
 
     def mouseMoveEvent(self, event):
         """
-        [REVISED] 通用化实现：
-        1. 优先向高亮器请求特殊HTML预览 (如颜色)。
-        2. 如果没有特殊预览，则回退到请求普通文本悬停文档。
+        悬浮提示逻辑：
+        1) 优先向高亮器请求特殊 HTML 预览（如颜色块等）；
+        2) 否则回退为普通的指令/单词说明。
         """
         cursor = self.cursorForPosition(event.pos())
         
@@ -218,7 +240,7 @@ class TextEditor(QPlainTextEdit):
             preview_html = self.highlighter.get_hover_preview_html(cursor)
         
         if preview_html:
-            # 如果高亮器返回了HTML，直接显示并返回
+            # 如果高亮器返回了 HTML，直接显示并返回
             QToolTip.showText(event.globalPosition().toPoint(), preview_html, self)
             super().mouseMoveEvent(event)
             return
@@ -240,7 +262,7 @@ class TextEditor(QPlainTextEdit):
         if doc_string:
             QToolTip.showText(event.globalPosition().toPoint(), doc_string, self)
         else:
-            # 只有在没有任何提示可显示时，才隐藏并重置
+            # 没有任何提示可显示时，隐藏并重置
             QToolTip.hideText()
             self._last_hovered_word = None
 
@@ -275,8 +297,11 @@ class TextEditor(QPlainTextEdit):
         # 定位行号栏
         cr = self.contentsRect()
         self.line_number_area.setGeometry(QRect(cr.left(), cr.top(), self.lineNumberAreaWidth(), cr.height()))
+        # 定位小地图
+        if self._minimap_enabled and self.minimap_area:
+            self.minimap_area.setGeometry(QRect(cr.right() - self.minimapWidth() + 1, cr.top(), self.minimapWidth(), cr.height()))
         
-        # 定位搜索面板 (你原有的逻辑)
+        # 定位搜索面板
         if self.find_panel:
             margin = 10
             x = self.viewport().width() - self.find_panel.width() - margin
@@ -290,8 +315,7 @@ class TextEditor(QPlainTextEdit):
 
     def _on_cursor_position_changed(self):
         """
-        当光标位置改变时，现在只处理帮助提示的逻辑。
-        补全的触发已移到 update_full_analysis 中。
+        当光标位置改变时，仅处理帮助提示逻辑（补全触发在外部更新流程中）。
         """
         cursor = self.textCursor()
         cursor.select(QTextCursor.SelectionType.WordUnderCursor)
@@ -426,10 +450,10 @@ class TextEditor(QPlainTextEdit):
         space = 3 + self.fontMetrics().horizontalAdvance('9') * digits + 3
         return space
 
-    def updateLineNumberAreaWidth(self, _=None):
-        """更新行号栏的宽度，并调整编辑器内容区域的边距。"""
-        # 左边距需要足够宽，以容纳行号栏
-        self.setViewportMargins(self.lineNumberAreaWidth(), 0, 0, 0)
+    def updateAuxiliaryAreasWidth(self, _=None):
+        """更新辅助区域（行号栏与小地图）的宽度，并调整编辑器内容区域的边距。"""
+        right_margin = self.minimapWidth() if self._minimap_enabled else 0
+        self.setViewportMargins(self.lineNumberAreaWidth(), 0, right_margin, 0)
 
     def updateLineNumberArea(self, rect: QRect, dy: int):
         """当编辑器滚动时，同步滚动行号栏。"""
@@ -439,7 +463,17 @@ class TextEditor(QPlainTextEdit):
             self.line_number_area.update(0, rect.y(), self.line_number_area.width(), rect.height())
 
         if rect.contains(self.viewport().rect()):
-            self.updateLineNumberAreaWidth(0)
+            self.updateAuxiliaryAreasWidth(0)
+
+    def _on_update_request(self, rect: QRect, dy: int):
+        # 同步行号栏
+        self.updateLineNumberArea(rect, dy)
+        # 同步小地图
+        if self._minimap_enabled and self.minimap_area:
+            if dy:
+                self.minimap_area.scroll(0, 0)  # 小地图整体按比例绘制，不做像素滚动
+            else:
+                self.minimap_area.update(0, rect.y(), self.minimap_area.width(), rect.height())
     def lineNumberAreaPaintEvent(self, event: QPaintEvent):
         """由 LineNumberArea 调用，实际执行绘制操作。"""
         painter = QPainter(self.line_number_area)
@@ -471,9 +505,8 @@ class TextEditor(QPlainTextEdit):
             block_number += 1
     def highlightCurrentLine(self):
         """
-        [FIXED] 高亮编辑器中的当前行，并安全地触发一次行号栏的重绘。
+        高亮编辑器中的当前行，并安全地触发一次行号栏的重绘。
         """
-        # --- [KEY FIX] ---
         # 1. 暂时阻塞信号，防止 setExtraSelections 触发 textChanged
         self.blockSignals(True)
         
@@ -490,8 +523,217 @@ class TextEditor(QPlainTextEdit):
         finally:
             # 2. 确保信号总是会被恢复
             self.blockSignals(False)
-        # --- END FIX ---
+
         
         # 触发一次行号栏的重绘，以更新数字的颜色
         self.line_number_area.update()
+        if self._minimap_enabled and self.minimap_area:
+            self.minimap_area.update()
+
+    # ---------------------------------------------------------------
+    # 公开 API：动态调整编辑器字体/字号
+    # ---------------------------------------------------------------
+    def apply_editor_font(self, family: str | None = None, point_size: int | None = None):
+        """
+        动态应用编辑器字体设置。
+        - family: 字体族名；None 表示保持不变
+        - point_size: 字号；None 表示保持不变
+        自动调整制表符宽度与行号栏。
+        """
+        f = QFont(self.font())
+        if family:
+            f.setFamily(family)
+        if point_size:
+            f.setPointSize(point_size)
+        self.setFont(f)
+        try:
+            space_width = self.fontMetrics().horizontalAdvance(' ')
+            self.setTabStopDistance(space_width * self.INDENT_WIDTH)
+        except Exception:
+            pass
+        # 刷新与字体相关的区域
+        self.updateAuxiliaryAreasWidth(0)
+        self.line_number_area.update()
+        if self._minimap_enabled and self.minimap_area:
+            self.minimap_area.update()
+
+    # ---------------------------------------------------------------
+    # 小地图绘制与交互
+    # ---------------------------------------------------------------
+    def minimapWidth(self) -> int:
+        return self._minimap_width
+
+    def minimapPaintEvent(self, event: QPaintEvent):
+        """绘制改进版小地图：
+        - 背景使用渐变与淡淡的网格感
+        - 每行显示代码密度条（基于非空字符数）
+        - 大文件下进行抽样避免性能问题
+        - 当前视口范围高亮 + 当前行指示线
+        """
+        painter = QPainter(self.minimap_area)
+        rect = event.rect()
+        w = rect.width()
+        h = rect.height()
+
+        # 背景渐变
+        # QLinearGradient 需要 QPointF 或数值，而 QRect 返回的是 QPoint
+        # 明确转换为浮点坐标避免类型错误
+        top_left = rect.topLeft()
+        bottom_left = rect.bottomLeft()
+        gradient = QLinearGradient(float(top_left.x()), float(top_left.y()), float(bottom_left.x()), float(bottom_left.y()))
+        gradient.setColorAt(0.0, QColor("#202020"))
+        gradient.setColorAt(1.0, QColor("#262626"))
+        painter.fillRect(rect, gradient)
+
+        total_blocks = max(1, self.blockCount())
+
+        # 如果行数太多，抽样（压缩到最多 150 条渲染）
+        max_render = 150
+        step = max(1, total_blocks // max_render)
+
+        # 统计最大行“密度”用于归一化
+        # 简单度量：去除空白后的字符数
+        max_density = 1
+        for i in range(0, total_blocks, step):
+            block = self.document().findBlockByNumber(i)
+            text = block.text().rstrip()
+            # 使用非空白字符数作为密度
+            d = len(re.sub(r"\s+", "", text))
+            if d > max_density:
+                max_density = d
+
+        # 绘制“缩略图”：将每行文本压缩为若干列的小块，模拟微缩文字
+        bar_left = 2
+        bar_width = max(1, w - 4)
+
+        def char_intensity(ch: str) -> float:
+            if ch.isspace():
+                return 0.0
+            if ch.isalpha():
+                return 0.85 if ch.isupper() else 0.75
+            if ch.isdigit():
+                return 0.7
+            # 括号、花括号、分号等给更高对比
+            if ch in '(){}[];:,._':
+                return 0.9
+            # 其他符号
+            return 0.6
+
+        # 每行最多渲染的列数，避免过宽影响性能
+        max_cols = min(96, bar_width)
+
+        for i in range(0, total_blocks, step):
+            block = self.document().findBlockByNumber(i)
+            text = block.text().rstrip('\n')
+
+            # 行在小地图中的纵向区间（按比例映射）
+            y1 = int(i * h / total_blocks)
+            y2 = int((i + step) * h / total_blocks)
+            bh = max(1, y2 - y1)
+
+            if not text:
+                # 空行用很淡的底色
+                painter.fillRect(bar_left, y1, bar_width, bh, QColor("#2d2d2d"))
+                continue
+
+            # 将该行压缩成若干列
+            cols = max(1, max_cols)
+            cw = max(1, int(bar_width / cols))
+            # 计算抽样步长：将行字符平均映射到列
+            stride = max(1, int(len(text) / cols))
+
+            # 简单的“注释行”与“字符串”检测，用不同色调
+            is_comment = text.strip().startswith('//')
+            in_string = '"' in text
+
+            for c in range(cols):
+                idx = c * stride
+                if idx >= len(text):
+                    break
+                ch = text[idx]
+                inten = char_intensity(ch)
+                # 基于整行总体密度微调强度
+                line_density = len(re.sub(r"\s+", "", text)) / max_density
+                inten = min(1.0, 0.4 * inten + 0.6 * line_density)
+
+                # 着色：普通为灰度，注释偏绿，字符串偏黄
+                if is_comment:
+                    base = QColor(95, 174, 95)  # 绿
+                elif in_string:
+                    base = QColor(210, 190, 90)  # 黄
+                else:
+                    base = QColor(120, 120, 120) # 灰
+
+                r = int(base.red() * inten)
+                g = int(base.green() * inten)
+                b = int(base.blue() * inten)
+                color = QColor(max(35, r), max(35, g), max(35, b))
+
+                x = bar_left + c * cw
+                painter.fillRect(x, y1, cw, bh, color)
+
+        # 视口高亮框：基于实际像素高度累加更精确
+        first_block = self.firstVisibleBlock()
+        first_block_number = first_block.blockNumber()
+        visible_px = self.viewport().height()
+        acc_px = 0.0
+        block = first_block
+        visible_blocks = 0
+        while block.isValid() and acc_px < visible_px:
+            acc_px += self.blockBoundingRect(block).height()
+            visible_blocks += 1
+            block = block.next()
+        # 比例位置
+        y_top = int(first_block_number * h / total_blocks)
+        y_bottom = int((first_block_number + max(1, visible_blocks)) * h / total_blocks)
+        view_h = max(3, y_bottom - y_top)
+        overlay = QColor("#4ec9b0")
+        overlay.setAlpha(80)
+        painter.fillRect(0, y_top, w, view_h, overlay)
+
+        # 当前行指示线
+        current_line = self.textCursor().blockNumber()
+        y_line = int(current_line * h / total_blocks)
+        pen = QPen(QColor("#ffcc00"))
+        pen.setWidth(2)
+        painter.setPen(pen)
+        painter.drawLine(0, y_line, w, y_line)
+
+        # 外边框
+        painter.setPen(QColor("#3a3a3a"))
+        painter.drawRect(rect.adjusted(0, 0, -1, -1))
+
+    def minimapMouseEvent(self, event):
+        """点击 / 拖动小地图时跳转。使用累积高度寻找目标行，适配不同块高度。"""
+        if not self._minimap_enabled:
+            return
+        y_clicked = event.position().toPoint().y()
+        h = max(1, self.minimap_area.height())
+        total_blocks = max(1, self.blockCount())
+        # 目标比例
+        ratio = min(1.0, max(0.0, y_clicked / h))
+        target_index = int(ratio * (total_blocks - 1))
+
+        # 使用累积方式微调：在长行高度差异较大时更准确
+        # 简化：直接跳转到 target_index，对性能友好
+        self.jump_to_line(target_index + 1)
+
+    def set_minimap_enabled(self, enabled: bool):
+        self._minimap_enabled = bool(enabled)
+        if self._minimap_enabled:
+            if self.minimap_area is None:
+                self.minimap_area = MinimapArea(self)
+            self.minimap_area.show()
+        else:
+            if self.minimap_area:
+                self.minimap_area.hide()
+        self.updateAuxiliaryAreasWidth(0)
+        self.update()
+
+    def set_minimap_width(self, width_px: int):
+        width_px = int(max(16, min(400, width_px)))
+        self._minimap_width = width_px
+        self.updateAuxiliaryAreasWidth(0)
+        if self.minimap_area:
+            self.minimap_area.update()
     

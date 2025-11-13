@@ -55,6 +55,14 @@ class EclScriptHandler(ScriptHandler):
         self.tool_panel: TheclPanel | None = None
         # ECL脚本的指令集通常在eclmap文件中，暂时不需要像MSG那样加载
         self.instruction_docs = {}
+        self.builtin_variables = []
+        try:
+            # 假设文件在 resources 目录下
+            with open('./resources/ecl_variables.json', 'r', encoding='utf-8') as f:
+                self.builtin_variables = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"警告：无法加载内置变量文件: {e}")
+
         self.parser = EclParser()
         # 记录上一次用于大纲的文本指纹，避免重复刷新导致折叠状态被重置
         self._last_outline_fingerprint = None
@@ -74,7 +82,7 @@ class EclScriptHandler(ScriptHandler):
     def create_highlighter(self, document):
         """创建并返回 ECL 语法高亮器实例。"""
         # TODO: 将来替换为 EclSyntaxHighlighter
-        return EclSyntaxHighlighter(document, self.instruction_docs)
+        return EclSyntaxHighlighter(document, self.instruction_docs,builtin_variables=self.builtin_variables)
         # 暂时返回一个不执行任何操作的基础高亮器
         return QSyntaxHighlighter(document)
 
@@ -289,12 +297,22 @@ class EclScriptHandler(ScriptHandler):
     def _apply_docs_to_highlighter(self, main_window):
         #print("[DEBUG] 应用 ECL 指令文档到高亮器...")
         hl = getattr(main_window.text_editor, 'highlighter', None)
-        if hl and hasattr(hl, 'instruction_docs'):
-            hl.instruction_docs = self.instruction_docs
-            try:
-                hl.rehighlight()
-            except Exception:
-                pass
+        if hl:
+            # 首选：调用高亮器提供的动态更新接口，触发规则重建
+            set_docs = getattr(hl, 'set_instruction_docs', None)
+            if callable(set_docs):
+                try:
+                    set_docs(self.instruction_docs)
+                except Exception:
+                    pass
+            else:
+                # 兼容旧版本：直接赋值并重绘（但不会重建规则，效果可能不完全）
+                if hasattr(hl, 'instruction_docs'):
+                    hl.instruction_docs = self.instruction_docs
+                try:
+                    hl.rehighlight()
+                except Exception:
+                    pass
         # 刷新侧边栏（用当前光标下的词尝试拉取帮助）
         try:
             if hasattr(main_window.text_editor, '_text_under_cursor'):

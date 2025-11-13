@@ -19,7 +19,7 @@ class Settings:
             filename: 保存用户设置的文件名。
         """
         self.filepath = Path(filename)
-        # --- [MODIFICATION 1] 添加新的设置键的默认值 ---
+
         self.data: Dict[str, Any] = {
             "user_thanm_path": "",
             "user_anmm_path": "",
@@ -35,6 +35,17 @@ class Settings:
             "user_eclmap_path": "",
             "user_std_ref_path": "",
             "user_ecl_ref_path": "",
+            # 应用通用偏好设置
+            "autosave_enabled": True,
+            "autosave_interval_sec": 30,
+            "autosave_on_focus_out": True,
+            "ui_monospaced_only_default": False,
+            # 可选：记住字体
+            "ui_font_family": "",
+            "ui_font_size": 12,
+            # 小地图
+            "ui_minimap_enabled": True,
+            "ui_minimap_width": 64,
         }
         
         # --- 定位并缓存所有内置资源的路径 ---

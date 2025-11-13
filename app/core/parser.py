@@ -66,7 +66,7 @@ class ScriptParser:
 
     def get_all_sprite_locations(self, text: str) -> Dict[str, int]:
         """
-        [FIXED] 使用健壮的分割策略来解析文本，以查找每个 sprite 定义的行号。
+        使用健壮的分割策略来解析文本，以查找每个 sprite 定义的行号。
         """
         locations = {}
         entry_sections = re.split(r'(?=entry\s+\w+\s*{)', text)

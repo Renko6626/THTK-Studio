@@ -1,8 +1,11 @@
 # app/main_window.py
 
 from pathlib import Path
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QMessageBox, QMenu, QWidget
+from PyQt6.QtCore import Qt, QTimer, QEvent
+from PyQt6.QtWidgets import (
+    QMainWindow, QFileDialog, QMessageBox, QMenu, QWidget,
+    QFontComboBox, QComboBox, QLabel, QCheckBox
+)
 from PyQt6.QtGui import QAction, QKeySequence, QIcon
 from PyQt6.QtWidgets import QStyle
 # --- 导入核心模块 ---
@@ -19,6 +22,7 @@ from .handlers.ecl_handler import EclScriptHandler
 from .widgets.text_editor import TextEditor
 from .widgets.help_panel import HelpPanel
 from .widgets.about_dialog import AboutDialog
+from .widgets.settings_dialog import SettingsDialog
 
 
 class MainWindow(QMainWindow):
@@ -53,7 +57,7 @@ class MainWindow(QMainWindow):
             ".std": std_handler_instance, # 用于直接打开
             ".ecl.txt": ecl_handler_instance, # ECL 文本
             ".ecl": ecl_handler_instance,     # 直接打开 ECL
-            ".txt": std_handler_instance, # 作为默认或通用txt处理器
+            ".txt": ecl_handler_instance, # 作为默认或通用txt处理器
         }
         self.current_handler: ScriptHandler | None = None
 
@@ -75,6 +79,11 @@ class MainWindow(QMainWindow):
         self.update_timer.setInterval(400) # 400毫秒延迟
         self.update_timer.timeout.connect(self.run_handler_update)
 
+        # 自动保存计时器（空闲 N 秒后保存）
+        self.autosave_timer = QTimer(self)
+        self.autosave_timer.setSingleShot(True)
+        self.autosave_timer.timeout.connect(self._on_autosave_timeout)
+
         # 2. 连接 textChanged 到轻量级槽函数
         self.text_editor.document().modificationChanged.connect(self._on_modification_changed)
         #print("[DEBUG] MainWindow: Connected modificationChanged signal.")
@@ -85,6 +94,11 @@ class MainWindow(QMainWindow):
         
         # 启动时默认激活 ANM 处理器
         self.switch_handler(self.script_handlers["ANM"])
+        # 应用首选项
+        try:
+            self._apply_settings_on_startup()
+        except Exception:
+            pass
     # ==================================================================
     # 通用 UI 创建方法
     # ==================================================================
@@ -95,6 +109,8 @@ class MainWindow(QMainWindow):
         """
         #print("[DEBUG] MainWindow.on_text_changed_lightweight: Text changed, restarting timer.")
         self.update_timer.start()
+        # 自动保存：重置单次计时器
+        self._restart_autosave_timer()
     def run_handler_update(self):
         """
         重量级槽函数：由计时器超时或手动刷新调用。
@@ -219,6 +235,12 @@ class MainWindow(QMainWindow):
         self.view_menu.addAction(self.refresh_action)
         self.view_menu.addSeparator()
         self.view_menu.addAction(self.help_panel.toggleViewAction())
+        # 顶部“设置”菜单
+        settings_menu = menu_bar.addMenu("设置(&S)")
+        self.open_settings_action = QAction("首选项...", self)
+        self.open_settings_action.triggered.connect(self.show_settings_dialog)
+        settings_menu.addAction(self.open_settings_action)
+        
         # 顶部“关于”菜单，点击弹出完整说明对话框
         about_menu = menu_bar.addMenu("关于(&A)")
         self.about_overview_action = QAction("项目整体说明...", self)
@@ -240,6 +262,12 @@ class MainWindow(QMainWindow):
             self._about_dialog.raise_()
             self._about_dialog.activateWindow()
 
+    def show_settings_dialog(self):
+        dlg = SettingsDialog(self.settings, self)
+        if dlg.exec():
+            # 用户点击确定，应用设置
+            self._apply_settings_from_data()
+
         
     def _populate_type_menu(self):
         """用可用的处理器填充“脚本类型”菜单。"""
@@ -259,6 +287,74 @@ class MainWindow(QMainWindow):
         self.tool_bar.addAction(self.save_action)
         self.tool_bar.addSeparator()
         self.tool_bar.addAction(self.refresh_action)
+        # 编辑器字体/字号选择
+        self.tool_bar.addSeparator()
+        try:
+            # 字体选择（仅等宽字体更合适）
+            self.font_combo = QFontComboBox(self.tool_bar)
+            # 初始显示所有字体；可通过复选框切换为仅等宽
+            try:
+                self.font_combo.setFontFilters(QFontComboBox.FontFilter.AllFonts)
+            except Exception:
+                pass
+
+            self.font_combo.setEditable(False)
+            # 初始化为当前编辑器字体
+            self.font_combo.setCurrentFont(self.text_editor.font())
+            self.tool_bar.addWidget(QLabel(" 字体:"))
+            self.tool_bar.addWidget(self.font_combo)
+            self.font_combo.currentFontChanged.connect(
+                lambda f: self.text_editor.apply_editor_font(family=f.family())
+            )
+
+            # 复选框：只显示等宽字体
+            self.monospaced_only_checkbox = QCheckBox(" 只显示等宽")
+            self.monospaced_only_checkbox.setToolTip("勾选后字体下拉仅显示等宽字体")
+            self.tool_bar.addWidget(self.monospaced_only_checkbox)
+            def _toggle_font_filter(checked: bool):
+                try:
+                    self.font_combo.setFontFilters(
+                        QFontComboBox.FontFilter.MonospacedFonts if checked else QFontComboBox.FontFilter.AllFonts
+                    )
+                except Exception:
+                    pass
+            self.monospaced_only_checkbox.toggled.connect(_toggle_font_filter)
+            # 初始化勾选状态来源于设置
+            try:
+                default_checked = bool(self.settings.data.get("ui_monospaced_only_default", False))
+                self.monospaced_only_checkbox.setChecked(default_checked)
+                _toggle_font_filter(default_checked)
+            except Exception:
+                pass
+            # 变更时持久化
+            def _persist_monospaced(checked: bool):
+                try:
+                    self.settings.data["ui_monospaced_only_default"] = bool(checked)
+                    self.settings.save()
+                except Exception:
+                    pass
+            self.monospaced_only_checkbox.toggled.connect(_persist_monospaced)
+
+            # 字号选择
+            self.font_size_combo = QComboBox(self.tool_bar)
+            sizes = [8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40]
+            self.font_size_combo.addItems([str(s) for s in sizes])
+            # 初始化为当前字号
+            try:
+                current_size = self.text_editor.font().pointSize()
+                if current_size > 0:
+                    idx = self.font_size_combo.findText(str(current_size))
+                    if idx >= 0:
+                        self.font_size_combo.setCurrentIndex(idx)
+            except Exception:
+                pass
+            self.tool_bar.addWidget(QLabel(" 大小:"))
+            self.tool_bar.addWidget(self.font_size_combo)
+            self.font_size_combo.currentTextChanged.connect(
+                lambda s: self.text_editor.apply_editor_font(point_size=int(s)) if s.isdigit() else None
+            )
+        except Exception:
+            pass
 
     def _create_status_bar(self):
         self.statusBar = self.statusBar()
@@ -340,6 +436,43 @@ class MainWindow(QMainWindow):
         self.run_handler_update()
 
     # ==================================================================
+    # 自动保存逻辑
+    # ==================================================================
+    def _restart_autosave_timer(self):
+        try:
+            enabled = bool(self.settings.data.get("autosave_enabled", True))
+            interval_sec = int(self.settings.data.get("autosave_interval_sec", 30))
+        except Exception:
+            enabled = True
+            interval_sec = 30
+        if enabled and interval_sec > 0:
+            self.autosave_timer.start(max(1000, interval_sec * 1000))
+        else:
+            self.autosave_timer.stop()
+
+    def _on_autosave_timeout(self):
+        # 仅在已修改且有路径时自动保存
+        try:
+            if self.text_editor.document().isModified() and self.current_file_path is not None:
+                self.save_file()
+                self.statusBar.showMessage("已自动保存", 2000)
+        finally:
+            # 单次计时器触发后不自动重启，由文本变更时重启
+            pass
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event.type() == QEvent.Type.ActivationChange:
+            try:
+                save_on_focus_out = bool(self.settings.data.get("autosave_on_focus_out", True))
+            except Exception:
+                save_on_focus_out = True
+            if save_on_focus_out and (not self.isActiveWindow()):
+                if self.text_editor.document().isModified() and self.current_file_path is not None:
+                    self.save_file()
+                    self.statusBar.showMessage("失焦自动保存", 2000)
+
+    # ==================================================================
     # 通用槽函数和文件操作
     # ==================================================================
 
@@ -388,6 +521,41 @@ class MainWindow(QMainWindow):
         prefix = "* " if is_modified else ""
         handler_name = f" ({self.current_handler.get_name()})" if self.current_handler else ""
         self.setWindowTitle(f"{prefix}{file_name}{handler_name} - {title}")
+
+    # ==================================================================
+    # 应用首选项
+    # ==================================================================
+    def _apply_settings_on_startup(self):
+        # 自动保存：根据设置启动或关闭
+        self._restart_autosave_timer()
+        # 工具栏字体过滤在创建时已经应用默认值
+        # 小地图
+        try:
+            if hasattr(self.text_editor, 'set_minimap_enabled'):
+                self.text_editor.set_minimap_enabled(bool(self.settings.data.get("ui_minimap_enabled", True)))
+            if hasattr(self.text_editor, 'set_minimap_width'):
+                self.text_editor.set_minimap_width(int(self.settings.data.get("ui_minimap_width", 64)))
+        except Exception:
+            pass
+
+    def _apply_settings_from_data(self):
+        # 应用自动保存配置
+        self._restart_autosave_timer()
+        # 应用字体过滤默认值到复选框
+        try:
+            if hasattr(self, 'monospaced_only_checkbox'):
+                default_checked = bool(self.settings.data.get("ui_monospaced_only_default", False))
+                self.monospaced_only_checkbox.setChecked(default_checked)
+        except Exception:
+            pass
+        # 小地图
+        try:
+            if hasattr(self.text_editor, 'set_minimap_enabled'):
+                self.text_editor.set_minimap_enabled(bool(self.settings.data.get("ui_minimap_enabled", True)))
+            if hasattr(self.text_editor, 'set_minimap_width'):
+                self.text_editor.set_minimap_width(int(self.settings.data.get("ui_minimap_width", 64)))
+        except Exception:
+            pass
     
     def _update_syntax_status(self, is_valid: bool, message: str):
         """槽函数：更新状态栏的语法检查信息。"""

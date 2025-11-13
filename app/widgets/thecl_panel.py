@@ -9,7 +9,6 @@ from PyQt6.QtGui import QIcon
 from typing import Optional, Dict
 
 # 适用于ECL脚本的游戏版本字典
-# 东方系列从TH06到TH18都使用了ECL
 ECL_GAME_VERSIONS = {
     "东方锦上京 (th20)": "20",
     "东方兽王园 (th19)": "19",
