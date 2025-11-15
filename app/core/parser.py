@@ -47,6 +47,24 @@ class ScriptParser:
             if name_match:
                 entry_data['image_path'] = name_match.group(1)
 
+            # 提取可选的宽高 / 偏移 / 其他数值字段（允许负号）
+            int_field_patterns = {
+                'width': r'width:\s*(-?\d+)',
+                'height': r'height:\s*(-?\d+)',
+                'xOffset': r'xOffset:\s*(-?\d+)',
+                'yOffset': r'yOffset:\s*(-?\d+)',
+                # 兼容下划线命名（若脚本使用不同风格）
+                'x_offset': r'x_offset:\s*(-?\d+)',
+                'y_offset': r'y_offset:\s*(-?\d+)',
+            }
+            for key, pattern in int_field_patterns.items():
+                m = re.search(pattern, entry_content)
+                if m:
+                    try:
+                        entry_data[key] = int(m.group(1))
+                    except ValueError:
+                        pass
+
             # 提取 sprites 块
             sprites_block_match = re.search(r'sprites:\s*{((.|\n)*)}', entry_content)
             if sprites_block_match:

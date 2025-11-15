@@ -23,10 +23,14 @@ class ImageManager:
         """
         self.base_path = base_path
         self.image_cache: Dict[str, Optional[ImageType]] = {}
+        # 缓存裁剪后的精灵（包含偏移），键为 (full_path, x, y, w, h, x_off, y_off)
+        self.sprite_cache: Dict[tuple, Optional[ImageType]] = {}
 
     def set_base_path(self, path: str):
         """设置用于解析相对路径的基准目录。"""
         self.base_path = path
+        # 更换基准路径意味着不同资源集，清空裁剪缓存以防串用
+        self.sprite_cache.clear()
 
     def _get_full_path(self, relative_path: str) -> str:
         """根据基准目录计算图像的完整绝对路径。"""
@@ -90,10 +94,100 @@ class ImageManager:
             print(f"错误：裁剪精灵时出错。路径: {relative_path}, 区域: {box}. 原因: {e}")
             return None
 
+    def get_sprite_image_with_offset(
+        self,
+        relative_path: str,
+        rect: Dict[str, int],
+        x_offset: int = 0,
+        y_offset: int = 0,
+        base_width: Optional[int] = None,
+        base_height: Optional[int] = None,
+    ) -> Optional[ImageType]:
+        """
+        根据 entry 的 xOffset / yOffset 对“裁剪区域本身”进行整体平移，然后直接裁剪。
+
+        与之前的实现不同：不再把原始裁剪出的精灵放到一个偏移后的透明画布上；
+        而是把偏移视为对源 spritesheet 上矩形框的位移。这更贴合“偏移裁剪区域”语义。
+
+        参数:
+            relative_path: 图像文件的相对路径。
+            rect: 原始裁剪区域，包含 'x','y','w','h'。
+            x_offset: 需要应用到裁剪区域 X 的偏移量（可正可负）。
+            y_offset: 需要应用到裁剪区域 Y 的偏移量（可正可负）。
+            base_width/base_height: 旧接口遗留参数，当前逻辑不使用，保留是为了兼容调用方。
+
+        返回:
+            应用偏移并裁剪后的 Pillow Image；若裁剪区域超出或无效则返回 None。
+        """
+        full_path = self._get_full_path(relative_path)
+        # 先检查缓存（使用原始 rect 与偏移作为键）
+        try:
+            key = (
+                full_path,
+                int(rect.get('x', 0)), int(rect.get('y', 0)), int(rect.get('w', 0)), int(rect.get('h', 0)),
+                int(x_offset or 0), int(y_offset or 0)
+            )
+        except Exception:
+            # rect 非法时直接放弃缓存使用
+            key = None
+
+        if key is not None and key in self.sprite_cache:
+            return self.sprite_cache[key]
+
+        spritesheet = self.load_spritesheet(relative_path)
+        if not spritesheet:
+            return None
+
+        try:
+            sheet_w, sheet_h = spritesheet.size
+
+            ox = int(x_offset or 0)
+            oy = int(y_offset or 0)
+
+            # 原始裁剪框
+            x = int(rect.get('x', 0)) + ox
+            y = int(rect.get('y', 0)) + oy
+            w = int(rect.get('w', 0))
+            h = int(rect.get('h', 0))
+
+            # 若偏移导致起点越界，进行裁剪/截断（不做透明填充，保持简单）
+            if x < 0:
+                w = w + x  # x 为负，减少宽度
+                x = 0
+            if y < 0:
+                h = h + y  # y 为负，减少高度
+                y = 0
+
+            # 如果宽/高已变为非正，直接返回 None
+            if w <= 0 or h <= 0:
+                return None
+
+            # 右/下边界截断
+            if x + w > sheet_w:
+                w = sheet_w - x
+            if y + h > sheet_h:
+                h = sheet_h - y
+
+            if w <= 0 or h <= 0:
+                return None
+
+            box = (x, y, x + w, y + h)
+            sprite = spritesheet.crop(box)
+            if sprite.mode != "RGBA":
+                sprite = sprite.convert("RGBA")
+            # 缓存结果
+            if key is not None:
+                self.sprite_cache[key] = sprite
+            return sprite
+        except Exception as e:
+            print(f"错误：偏移裁剪时出错。路径: {relative_path}, rect: {rect}, offset: ({x_offset},{y_offset}). 原因: {e}")
+            return None
+
     def clear_cache(self):
         """清空所有已缓存的图像，用于在关闭或切换项目时释放内存。"""
         print("正在清空图像缓存...")
         self.image_cache.clear()
+        self.sprite_cache.clear()
 
 # --- 使用示例和测试 ---
 if __name__ == '__main__':
